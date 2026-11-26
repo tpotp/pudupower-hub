@@ -1,0 +1,56 @@
+{
+  "name": "The Power of the Pudú — Metal Progresivo Chileno",
+  "short_name": "Pudú Power",
+  "description": "Hub oficial interactivo en 3D de The Power of the Pudú. Música, visualizadores audiovisuales, generadores y Pudú Simulator.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#070b09",
+  "theme_color": "#070b09",
+  "lang": "es-CL",
+  "dir": "ltr",
+  "categories": ["music", "entertainment", "games"],
+  "icons": [
+    {
+      "src": "./favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn.pudupower.com/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn.pudupower.com/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://cdn.pudupower.com/icons/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+      "sizes": "1200x630",
+      "type": "image/webp",
+      "form_factor": "wide",
+      "label": "Hub 3D interactivo de The Power of the Pudú en escritorio"
+    },
+    {
+      "src": "https://cdn.pudupower.com/art/pudu-portada-mobile.webp",
+      "sizes": "720x1280",
+      "type": "image/webp",
+      "form_factor": "narrow",
+      "label": "Hub 3D interactivo de The Power of the Pudú en móvil"
+    }
+  ]
+}

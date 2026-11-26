@@ -1,11 +1,56 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": false,
+  "trailingSlash": false,
   "redirects": [
     { "source": "/ytp", "destination": "https://ytp.pudupower.com", "permanent": true },
     { "source": "/ytp/:path*", "destination": "https://ytp.pudupower.com/:path*", "permanent": true },
     { "source": "/poop", "destination": "https://ytp.pudupower.com", "permanent": true },
-    { "source": "/barsalitsuni", "destination": "https://barsalitsuni.pudupower.com", "permanent": true },
+    { "source": "/barsalitsuni", "destination": "https://barsalitsuni.vercel.app", "permanent": true },
     { "source": "/altiplanet", "destination": "https://altiplanet.pudupower.com", "permanent": true },
     { "source": "/chat", "destination": "https://chat.pudupower.com", "permanent": true },
-    { "source": "/simulator", "destination": "https://simulator.pudupower.com", "permanent": true }
+    { "source": "/simulator", "destination": "https://pudusimulatorprueba.vercel.app", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.pudupower.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.pudupower.com; img-src 'self' data: blob: https://cdn.pudupower.com; font-src 'self' data: https://fonts.gstatic.com https://cdn.pudupower.com; connect-src 'self' https://cdn.pudupower.com; media-src 'self' blob: https://cdn.pudupower.com; worker-src 'self' blob:; frame-ancestors 'self';"
+        }
+      ]
+    },
+    {
+      "source": "/(|index\\.html|about\\.html|contact\\.html|privacy-policy\\.html|terms\\.html)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" },
+        { "key": "X-Robots-Tag", "value": "index, follow" }
+      ]
+    },
+    {
+      "source": "/(.*\\.(?:js|css))",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/(.*\\.(?:svg|png|webp|jpg|jpeg|woff2|ico|glb|gltf))",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/manifest\\.webmanifest",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" },
+        { "key": "X-Robots-Tag", "value": "noindex" }
+      ]
+    }
   ]
 }

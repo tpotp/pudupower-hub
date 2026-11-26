@@ -1,221 +1,903 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es-CL">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PuduPower | The Power Of The Pudú — Música, Apps y Universo Pudú Metal</title>
-  <meta name="description" content="Hub oficial de The Power Of The Pudú: música Pudú Metal en Spotify, YouTube y Bandcamp, editor YTP Puduloco, generador Barsalitsuni, juegos y crónicas.">
-  <meta name="robots" content="index,follow,max-image-preview:large">
-  <link rel="canonical" href="https://pudupower.com/">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <meta name="google-adsense-account" content="ca-pub-9855270154071776">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9855270154071776" crossorigin="anonymous"></script>
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="PuduPower · The Power Of The Pudú">
-  <meta property="og:url" content="https://pudupower.com/">
-  <meta property="og:title" content="PuduPower | The Power Of The Pudú — Música, Apps y Universo Pudú Metal">
-  <meta property="og:description" content="Música de The Power Of The Pudú, Pudu Poop Maker, Barsalitsuni Video Generator, La Llama Altiplaneta y Pudu Simulator en un solo lugar.">
-  <meta property="og:image" content="https://pudupower.com/assets/the-power-of-the-pudu.webp">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="stylesheet" href="/site.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- SEO Principal -->
+  <title>The Power of the Pudú | Metal Progresivo Chileno &amp; Hub 3D</title>
+  <meta name="description" content="Hub oficial de The Power of the Pudú, banda chilena de metal progresivo y experimental. Explora el visualizador 3D, música, Pudú Simulator y generadores audiovisuales." />
+  <meta name="author" content="The Power of the Pudú" />
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+  <meta name="googlebot" content="index, follow" />
+
+  <!-- Canonical y Hreflang -->
+  <link rel="canonical" href="https://pudupower.com/" />
+  <link rel="alternate" hreflang="es-CL" href="https://pudupower.com/" />
+  <link rel="alternate" hreflang="es" href="https://pudupower.com/" />
+  <link rel="alternate" hreflang="x-default" href="https://pudupower.com/" />
+
+  <!-- Preconexión y Preload LCP (Cloudflare CDN) -->
+  <link rel="preconnect" href="https://cdn.pudupower.com" crossorigin />
+  <link rel="dns-prefetch" href="https://cdn.pudupower.com" />
+  <link
+    rel="preload"
+    as="image"
+    href="https://cdn.pudupower.com/art/pudu-portada-desktop.webp"
+    type="image/webp"
+    fetchpriority="high"
+  />
+
+  <!-- Open Graph / Facebook / Discord / WhatsApp -->
+  <meta property="og:type" content="music.musician" />
+  <meta property="og:locale" content="es_CL" />
+  <meta property="og:locale:alternate" content="es_ES" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:site_name" content="The Power of the Pudú" />
+  <meta property="og:url" content="https://pudupower.com/" />
+  <meta property="og:title" content="The Power of the Pudú — Metal Progresivo Chileno &amp; Hub 3D" />
+  <meta property="og:description" content="Metal progresivo y experimental desde Chile. Visual Synth 3D en Three.js, Chaos Audio, Pudu Poop Maker, Barsalitsuni Generator y Pudú Simulator." />
+  <meta property="og:image" content="https://cdn.pudupower.com/art/pudu-portada-desktop.webp" />
+  <meta property="og:image:secure_url" content="https://cdn.pudupower.com/art/pudu-portada-desktop.webp" />
+  <meta property="og:image:type" content="image/webp" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Arte oficial de portada de The Power of the Pudú — Metal Progresivo Chileno" />
+
+  <!-- Twitter / X Cards -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://pudupower.com/" />
+  <meta name="twitter:title" content="The Power of the Pudú — Metal Progresivo Chileno" />
+  <meta name="twitter:description" content="Hub interactivo 3D, generadores audiovisuales, simuladores y música oficial de The Power of the Pudú." />
+  <meta name="twitter:image" content="https://cdn.pudupower.com/art/pudu-portada-desktop.webp" />
+  <meta name="twitter:image:alt" content="Portada oficial de The Power of the Pudú" />
+
+  <!-- Apariencia, PWA e Iconos -->
+  <meta name="theme-color" content="#070b09" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pudú Power" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+
   <script type="application/ld+json">
   {
-    "@context":"https://schema.org",
-    "@graph":[
-      {"@type":"WebSite","@id":"https://pudupower.com/#website","url":"https://pudupower.com/","name":"PuduPower · The Power Of The Pudú","inLanguage":"es-CL"},
-      {"@type":"MusicGroup","@id":"https://pudupower.com/#band","name":"The Power Of The Pudú","genre":["Power Metal","Progressive Metal","Folk Metal"],"foundingLocation":{"@type":"Place","name":"Santiago, Chile"},"sameAs":["https://www.youtube.com/@thepowerofthepudu","https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1","https://thepowerofthepudu.bandcamp.com/"]}
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "MusicGroup",
+        "@id": "https://pudupower.com/#musicgroup",
+        "name": "The Power of the Pudú",
+        "alternateName": ["TPOTP", "Pudú Power"],
+        "url": "https://pudupower.com",
+        "image": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+        "description": "Banda chilena de metal progresivo y experimental que combina música pesada con experiencias web interactivas en 3D, sintetizadores visuales y simuladores.",
+        "genre": [
+          "Progressive Metal",
+          "Experimental Metal",
+          "Metal Progresivo Chileno",
+          "Avant-Garde Metal"
+        ],
+        "foundingLocation": {
+          "@type": "Place",
+          "name": "Chile",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "CL"
+          }
+        },
+        "sameAs": [
+          "https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1",
+          "https://www.youtube.com/@thepowerofthepudu",
+          "https://www.instagram.com/thepowerofthepudu",
+          "https://thepowerofthepudu.bandcamp.com"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://pudupower.com/#website",
+        "url": "https://pudupower.com/",
+        "name": "The Power of the Pudú",
+        "description": "Hub oficial interactivo en 3D de The Power of the Pudú.",
+        "inLanguage": "es-CL",
+        "publisher": {
+          "@id": "https://pudupower.com/#musicgroup"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://pudupower.com/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://pudupower.com/#webpage",
+        "url": "https://pudupower.com/",
+        "name": "The Power of the Pudú | Metal Progresivo Chileno & Hub 3D",
+        "description": "Hub oficial de The Power of the Pudú. Accede a nuestra música, visualizador 3D, Pudu Poop Maker, Barsalitsuni Generator y Pudú Simulator.",
+        "inLanguage": "es-CL",
+        "isPartOf": {
+          "@id": "https://pudupower.com/#website"
+        },
+        "about": {
+          "@id": "https://pudupower.com/#musicgroup"
+        },
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "url": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "breadcrumb": {
+          "@id": "https://pudupower.com/#breadcrumb"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://pudupower.com/#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://pudupower.com/"
+          }
+        ]
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://ytp.pudupower.com/#app",
+        "name": "Pudu Poop Maker",
+        "url": "https://ytp.pudupower.com",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web Browser",
+        "browserRequirements": "Requires JavaScript. Modern HTML5 browser.",
+        "description": "Generador audiovisual interactivo y máquina de caos YTP oficial de The Power of the Pudú.",
+        "author": {
+          "@id": "https://pudupower.com/#musicgroup"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://barsalitsuni.vercel.app/#app",
+        "name": "Barsalitsuni Generator",
+        "url": "https://barsalitsuni.vercel.app",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Web Browser",
+        "browserRequirements": "Requires JavaScript. Modern HTML5 browser.",
+        "description": "Generador audiovisual experimental y visualizador interactivo creado por The Power of the Pudú.",
+        "author": {
+          "@id": "https://pudupower.com/#musicgroup"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://puduworld.vercel.app/#app",
+        "name": "PuduWorld · Pudú Simulator × PuduChat",
+        "url": "https://puduworld.vercel.app",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Web Browser",
+        "browserRequirements": "Requires JavaScript and WebGL.",
+        "description": "Simulador interactivo en 3D protagonizado por un pudú dentro del universo experimental de The Power of the Pudú.",
+        "author": {
+          "@id": "https://pudupower.com/#musicgroup"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
     ]
   }
   </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Inter:wght@400;600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./vendor/three/three.module.js"
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --neon-green: #00ffaa;
+      --metal-crimson: #ff0055;
+      --pudu-gold: #ffb703;
+      --bg-dark: #070b09;
+
+      --focal-desktop: 50% 34%;
+      --focal-mobile: 50% 20%;
+      --focal-landscape: 32% 35%;
+
+      --font-display: 'Cinzel', serif;
+      --font-tech: 'Orbitron', sans-serif;
+      --font-sans: 'Inter', system-ui, sans-serif;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      min-height: 100dvh;
+      background-color: var(--bg-dark);
+      color: #f4f7f5;
+      font-family: var(--font-sans);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    /* 1. FONDO CINEMATOGRÁFICO CON PARALAJE MULTI-CAPA */
+    .bg-stage {
+      position: fixed;
+      inset: -6%;
+      width: 112%;
+      height: 112%;
+      z-index: 0;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      pointer-events: none;
+      will-change: transform;
+      transition: transform 0.08s ease-out;
+    }
+
+    .bg-picture {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .bg-art {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: var(--focal-desktop);
+      transform: scale(1.06);
+      transform-origin: center center;
+      filter: contrast(1.08) saturate(1.12) brightness(0.92);
+      transition: object-position 0.4s ease;
+    }
+
+    .bg-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          ellipse 85% 80% at 50% 36%,
+          rgba(7, 11, 9, 0.04) 0%,
+          rgba(7, 11, 9, 0.42) 55%,
+          rgba(7, 11, 9, 0.92) 100%
+        ),
+        linear-gradient(
+          to bottom,
+          rgba(7, 11, 9, 0.6) 0%,
+          rgba(7, 11, 9, 0.05) 24%,
+          rgba(7, 11, 9, 0.22) 58%,
+          rgba(7, 11, 9, 0.94) 100%
+        ),
+        radial-gradient(circle at 15% 85%, rgba(0, 255, 170, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 20%, rgba(255, 0, 85, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 95%, rgba(255, 183, 3, 0.09) 0%, transparent 40%);
+    }
+
+    /* 2. CANVAS THREE.JS PANTALLA COMPLETA */
+    #glassCanvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      z-index: 2;
+      pointer-events: none;
+      display: block;
+    }
+
+    /* 3. BURBUJA DE DIÁLOGO DEL PUDÚ */
+    .pudu-speech-bubble {
+      position: fixed;
+      z-index: 4;
+      pointer-events: auto;
+      transform: translate(-50%, -100%);
+      background: rgba(7, 14, 10, 0.88);
+      border: 1.5px solid var(--neon-green);
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.35;
+      max-width: 310px;
+      text-align: center;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.75), 0 0 20px rgba(0, 255, 170, 0.35);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.25s ease;
+      cursor: pointer;
+    }
+
+    .pudu-speech-bubble.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translate(-50%, -100%) scale(1);
+    }
+
+    .pudu-speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 8px 7px 0 7px;
+      border-style: solid;
+      border-color: var(--neon-green) transparent transparent transparent;
+    }
+
+    /* 4. HUD ESTRUCTURAL */
+    .hud {
+      position: relative;
+      z-index: 3;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: clamp(1.2rem, 3.5vw, 2.5rem);
+      padding-top: max(clamp(1.2rem, 3.5vw, 2.5rem), env(safe-area-inset-top));
+      padding-bottom: max(clamp(1.2rem, 3.5vw, 2.5rem), env(safe-area-inset-bottom));
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 1.5rem;
+    }
+
+    /* ======================================================================
+       HEADER PROFESIONAL BANDA DE METAL (NIVEL STRATOVARIUS / SONATA ARCTICA)
+       ====================================================================== */
+    .hud-header {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 0.5rem 0 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 25;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.45rem;
+    }
+
+    .brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), filter 0.3s ease;
+    }
+
+    .brand-logo-link:hover {
+      transform: scale(1.025);
+    }
+
+    .band-logo-img {
+      height: clamp(52px, 8vw, 84px);
+      width: auto;
+      max-width: min(85vw, 560px);
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.35)) drop-shadow(0 4px 22px rgba(0, 255, 170, 0.28));
+      transition: filter 0.3s ease;
+    }
+
+    .brand-logo-link:hover .band-logo-img {
+      filter: drop-shadow(0 0 28px rgba(255, 255, 255, 0.65)) drop-shadow(0 6px 30px rgba(0, 255, 170, 0.48));
+    }
+
+    .brand-subline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .genre-tag {
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 700;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.58rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--neon-green, #00ffaa);
+      background: rgba(0, 255, 170, 0.08);
+      border: 1px solid rgba(0, 255, 170, 0.3);
+      padding: 2px 8px;
+      border-radius: 99px;
+      text-shadow: 0 0 8px rgba(0, 255, 170, 0.5);
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--neon-green, #00ffaa);
+      box-shadow: 0 0 8px var(--neon-green, #00ffaa);
+      animation: statusPulse 2s infinite ease-in-out;
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+
+    .band-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .nav-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 13px;
+      border-radius: 8px;
+      background: rgba(14, 23, 18, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #e8ece9;
+      text-decoration: none;
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .nav-item:hover {
+      background: rgba(0, 255, 170, 0.12);
+      border-color: rgba(0, 255, 170, 0.55);
+      color: #ffffff;
+      transform: translateY(-1.5px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(0, 255, 170, 0.25);
+    }
+
+    .nav-icon {
+      color: var(--neon-green, #00ffaa);
+      transition: transform 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover .nav-icon {
+      transform: scale(1.15);
+    }
+
+    /* Viñeteado cinematográfico épico de metal */
+    .cinematic-vignette {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 12;
+      background: radial-gradient(circle at 50% 45%, transparent 40%, rgba(3, 7, 5, 0.72) 100%);
+      mix-blend-mode: multiply;
+    }
+
+    /* Footer profesional */
+    .pro-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+      padding: 1.25rem 0 0.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      z-index: 25;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .footer-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 5px;
+    }
+
+    .footer-copy {
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.65rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(244, 247, 245, 0.7);
+    }
+
+    .footer-sub {
+      font-family: var(--font-metal, 'Cinzel', serif);
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--pudu-gold, #ffb703);
+      text-shadow: 0 0 14px rgba(255, 183, 3, 0.5);
+    }
+
+    .footer-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(244, 247, 245, 0.6);
+      text-decoration: none;
+      transition: color 0.2s ease, text-shadow 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--neon-green, #00ffaa);
+      text-shadow: 0 0 12px rgba(0, 255, 170, 0.5);
+    }
+
+    @media (max-width: 900px) {
+      .cards-dock {
+        grid-template-columns: 1fr;
+        gap: 1.1rem;
+      }
+      .glass-btn-target {
+        min-height: 110px;
+      }
+      .pudu-stage-zone {
+        min-height: 24dvh;
+      }
+      .bg-art {
+        object-position: var(--focal-mobile);
+      }
+    }
+
+    @media (max-height: 520px) and (orientation: landscape) {
+      .bg-art {
+        object-position: var(--focal-landscape);
+      }
+      .pudu-stage-zone {
+        min-height: 10dvh;
+      }
+      .cards-dock {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.7rem;
+      }
+      .glass-btn-target {
+        min-height: 90px;
+      }
+    }
+
+    /* ======================================================================
+       DOCK DE TARJETAS 3D / FÍSICAS (PROPORCIONES ESTILIZADAS THE POWER OF THE PUDÚ)
+       ====================================================================== */
+    .cards-dock {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(280px, 340px));
+      justify-content: center;
+      gap: 1.5rem;
+      width: 100%;
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 20;
+    }
+
+    .mode-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 24px 22px;
+      min-height: 200px;
+      border-radius: 24px;
+      text-decoration: none;
+      color: #ffffff;
+      background: rgba(10, 20, 14, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+      cursor: pointer;
+    }
+
+    /* En modo 3D activo (has-glass-3d), los elementos DOM actúan como hitboxes transparentes */
+    html.has-glass-3d .mode-card {
+      background: transparent !important;
+      border-color: transparent !important;
+      box-shadow: none !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+
+    html.has-glass-3d .mode-card * {
+      opacity: 0 !important;
+      visibility: hidden !important;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(0, 255, 170, 0.4);
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7), 0 0 24px rgba(0, 255, 170, 0.25);
+    }
+
+    .mode-icon {
+      font-size: 2.4rem;
+      width: 58px;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 16px;
+    }
+
+    .mode-text {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .mode-text strong {
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 1.15rem;
+      letter-spacing: 0.08em;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mode-text span {
+      font-size: 0.82rem;
+      color: rgba(244, 247, 245, 0.75);
+      line-height: 1.4;
+    }
+
+    .mode-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .mode-tags i {
+      font-style: normal;
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      padding: 3px 9px;
+      border-radius: 8px;
+      background: rgba(0, 255, 170, 0.12);
+      color: var(--neon-green, #00ffaa);
+      border: 1px solid rgba(0, 255, 170, 0.25);
+    }
+
+    .mode-go {
+      position: absolute;
+      top: 20px;
+      right: 22px;
+      font-size: 1.35rem;
+      color: rgba(255, 255, 255, 0.45);
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .mode-card:hover .mode-go {
+      color: var(--neon-green, #00ffaa);
+      transform: translate(3px, -3px);
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="nav-wrap">
-      <a class="brand" href="/"><img src="/assets/the-power-of-the-pudu.webp" alt="The Power Of The Pudú"><span>PuduPower · TPOTP</span></a>
-      <nav class="nav-links" aria-label="Navegación principal">
-        <a href="#apps">Apps &amp; Juegos</a>
-        <a href="#musica">Música &amp; Videos</a>
-        <a href="#historia">La Banda</a>
-        <a href="https://ytp.pudupower.com/guias/">Guías</a>
-        <a href="/about.html">Acerca de</a>
-        <a href="/contact.html">Contacto</a>
-        <a class="nav-cta" href="https://ytp.pudupower.com">Crear Video →</a>
+  <div class="cinematic-vignette" aria-hidden="true"></div>
+  <!-- Fondo con arte original desde Cloudflare CDN -->
+  <div class="bg-stage" aria-hidden="true">
+    <picture class="bg-picture">
+      <source
+        media="(max-width: 768px)"
+        srcset="https://cdn.pudupower.com/art/pudu-portada-mobile.webp"
+        type="image/webp"
+      />
+      <img
+        id="bg-cover-img"
+        class="bg-art"
+        src="https://cdn.pudupower.com/art/pudu-portada-desktop.webp"
+        alt="Portada Oficial The Power of the Pudú"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+  </div>
+
+  <div class="bg-overlay" aria-hidden="true"></div>
+
+  <!-- Canvas Three.js único de pantalla completa -->
+  <canvas id="glassCanvas" aria-hidden="true"></canvas>
+
+  <!-- Bocadillo de diálogo del Pudú interactivo -->
+  <div id="pudu3d-speech-bubble" class="pudu-speech-bubble" role="status" aria-live="polite">
+    ¡Ichipi! 🌱 ¡Bienvenido a The Power of the Pudú!
+  </div>
+
+  <!-- HUD Principal -->
+  <main class="hud">
+    <header class="hud-header">
+      <div class="brand">
+        <a href="/" class="brand-logo-link" aria-label="The Power of the Pudú - Official Website">
+          <img
+            src="assets/logo_the_power_of_the_pudu_blanco.png"
+            alt="The Power of the Pudú"
+            class="band-logo-img"
+            width="1246"
+            height="200"
+          />
+        </a>
+        <div class="brand-subline">
+          <span class="genre-tag">LATIN METAL</span>
+          <span class="status-pill"><i class="status-dot"></i> OFFICIAL HUB</span>
+        </div>
+      </div>
+
+      <nav class="band-nav" aria-label="Enlaces oficiales">
+        <a href="https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1" target="_blank" rel="noopener noreferrer" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          <span>SPOTIFY</span>
+        </a>
+        <a href="https://www.youtube.com/@thepowerofthepudu" target="_blank" rel="noopener noreferrer" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          <span>YOUTUBE</span>
+        </a>
+        <a href="https://thepowerofthepudu.bandcamp.com" target="_blank" rel="noopener noreferrer" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M0 18.75l7.437-13.5h16.563l-7.438 13.5z"/></svg>
+          <span>BANDCAMP</span>
+        </a>
+        <a href="https://www.instagram.com/thepowerofthepudu" target="_blank" rel="noopener noreferrer" class="nav-item">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          <span>INSTAGRAM</span>
+        </a>
       </nav>
-    </div>
-  </header>
+    </header>
 
-  <main class="wrap">
-    <section class="hero" style="margin-top:0">
-      <div>
-        <div class="eyebrow">Santiago, Chile · Pudú Metal · Apps Web</div>
-        <h1>El cuartel central de <span>The Power Of The Pudú</span></h1>
-        <p class="lead">Metal progresivo chileno con humor, bosques del sur y experimentos interactivos en el navegador. Crea videos YTP en segundos, deforma clips al ritmo de <em>Barsalitsuni</em>, pilota la <em>Llama Altiplaneta</em> o escucha la discografía completa.</p>
-        <div class="cta-row">
-          <a class="btn gold" href="https://ytp.pudupower.com">🎬 Abrir Pudu Poop Maker</a>
-          <a class="btn moss" href="https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1" target="_blank" rel="noopener">🎧 Escuchar en Spotify</a>
-          <a class="btn crimson" href="https://www.youtube.com/@thepowerofthepudu?sub_confirmation=1" target="_blank" rel="noopener">📺 Canal YouTube</a>
-          <a class="btn" href="https://thepowerofthepudu.bandcamp.com/music" target="_blank" rel="noopener">💿 Bandcamp</a>
-        </div>
-      </div>
-      <div class="poster-stack">
-        <img class="main-poster" src="/assets/the-power-of-the-pudu.webp" alt="Afiche oficial de The Power Of The Pudú">
-        <img class="sub-poster" src="/assets/barsalitsuni-2012.webp" alt="Afiche clásico de Barsalitsuni (2012)">
-        <img class="sub-poster" src="/assets/enchanted-castor.webp" alt="Afiche de Enchanted Castor">
-      </div>
+    <section
+      aria-hidden="false"
+      aria-label="Descripción de The Power of the Pudú"
+      style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;"
+    >
+      <h2>Sobre The Power of the Pudú — Banda de Metal Progresivo Chileno</h2>
+      <p>
+        <strong>The Power of the Pudú</strong> es una banda de <strong>metal progresivo y experimental de Chile</strong>
+        que fusiona riffs técnicos, compases irregulares y atmósfera avant-garde con experiencias digitales interactivas.
+        Inspirados en el pudú —el ciervo más pequeño del mundo y símbolo de la fauna nativa chilena—, este sitio web
+        funciona como un hub interactivo en 3D desarrollado con Three.js donde puedes escuchar nuestra música en Spotify
+        y Bandcamp, ver videos en YouTube y probar nuestras aplicaciones web oficiales:
+        <strong>Pudu Poop Maker</strong> (generador audiovisual YTP y caos sonoro),
+        <strong>Barsalitsuni Generator</strong> (sintetizador visual experimental) y
+        <strong>Pudú Simulator</strong> (simulador 3D en navegador).
+      </p>
     </section>
 
-    <section id="apps">
-      <div class="sec-head">
-        <h2>Laboratorio interactivo Pudú</h2>
-        <span>Todo corre directo en tu navegador, gratis y sin instalar nada</span>
-      </div>
-      <div class="apps-grid">
-        <a class="app-card" href="https://ytp.pudupower.com">
-          <img src="/assets/og-pudu-poop-maker.png" alt="Pudu Poop Maker editor de video">
-          <div class="app-body">
-            <span class="app-tag">Editor YTP</span>
-            <h3>Pudu Poop Maker (Puduloco)</h3>
-            <p>Corta, invierte, aplica stutter, sentence mix, zoom automático a rostros y glitch directo en tu teléfono o PC.</p>
-            <span class="app-link">Abrir ytp.pudupower.com →</span>
-          </div>
-        </a>
-        <a class="app-card" href="https://barsalitsuni.pudupower.com">
-          <img src="/assets/barsalitsuni_0.jpg" alt="Barsalitsuni Video Generator">
-          <div class="app-body">
-            <span class="app-tag">Audio-Reactivo</span>
-            <h3>Barsalitsuni Video Generator</h3>
-            <p>Deforma tus videos cuadro a cuadro con Seam Carving sincronizado al beat de <em>Barsalitsuni (El Gatito del Final)</em>.</p>
-            <span class="app-link">Abrir barsalitsuni.pudupower.com →</span>
-          </div>
-        </a>
-        <a class="app-card" href="https://altiplanet.pudupower.com">
-          <img src="https://i.ytimg.com/vi/ukWu40cDMOM/hqdefault.jpg" alt="La Llama Altiplaneta juego espacial">
-          <div class="app-body">
-            <span class="app-tag">Arcade Espacial</span>
-            <h3>La Llama Altiplaneta</h3>
-            <p>Esquiva asteroides, protege tu energía cósmica y compite por el puntaje más alto al ritmo del tema oficial.</p>
-            <span class="app-link">Jugar altiplanet.pudupower.com →</span>
-          </div>
-        </a>
-        <a class="app-card" href="https://simulator.pudupower.com">
-          <img src="/assets/enchanted-castor.webp" alt="The Power of the Pudú Simulator">
-          <div class="app-body">
-            <span class="app-tag">Simulador 3D</span>
-            <h3>Pudú Simulator · Bosque Valdiviano</h3>
-            <p>Explora el bosque templado del sur de Chile encarnando al ciervo más pequeño y poderoso del metal.</p>
-            <span class="app-link">Entrar simulator.pudupower.com →</span>
-          </div>
-        </a>
-        <a class="app-card" href="https://chat.pudupower.com">
-          <img src="/assets/barsalitsuni-2012.webp" alt="PudúChat Bosque Mágico">
-          <div class="app-body">
-            <span class="app-tag">P2P Sin Servidor</span>
-            <h3>PudúChat — Bosque Mágico</h3>
-            <p>Salas rápidas punto a punto directamente en el navegador para conversar entre fans y creadores.</p>
-            <span class="app-link">Abrir chat.pudupower.com →</span>
-          </div>
-        </a>
-      </div>
+    <!-- Safe-Zone central donde la mascotita 3D te acompaña -->
+    <div class="pudu-stage-zone" aria-hidden="true"></div>
+
+    <!-- Botones físicos 3D (The Power of the Pudú: Latin Progressive Metal Apps) -->
+    <section class="cards-dock" aria-label="Aplicaciones oficiales">
+      <a class="mode-card mode-poop" id="btn-poop" href="https://ytp.pudupower.com" target="_blank" rel="noopener noreferrer" aria-label="Pudu Poop Maker">
+        <span class="mode-icon" aria-hidden="true">💩</span>
+        <span class="mode-text">
+          <strong>Pudu Poop Maker</strong>
+          <span>Caos sonoro y YTP en estado puro: blast beats, cortes esquizofrénicos y metal progresivo sin frenos.</span>
+          <span class="mode-tags">
+            <i>Blast Beats</i>
+            <i>Caos YTP</i>
+          </span>
+        </span>
+        <span class="mode-go" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="mode-card mode-barsa" id="btn-barsa" href="https://barsalitsuni.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="Barsalitsuni Generator">
+        <span class="mode-icon" aria-hidden="true">🌌</span>
+        <span class="mode-text">
+          <strong>Barsalitsuni</strong>
+          <span>Sintetizador visual 3D con seam carving y estética avant-garde chilena para distorsionar la realidad.</span>
+          <span class="mode-tags">
+            <i>Seam Carving 3D</i>
+            <i>Avant-Garde Chileno</i>
+          </span>
+        </span>
+        <span class="mode-go" aria-hidden="true">↗</span>
+      </a>
+
+      <a class="mode-card mode-sim" id="btn-sim" href="https://puduworld.vercel.app" target="_blank" rel="noopener noreferrer" aria-label="PuduWorld">
+        <span class="mode-icon" aria-hidden="true">🦌</span>
+        <span class="mode-text">
+          <strong>PuduWorld</strong>
+          <span>Simulador 3D multijugador impulsado por IA generativa para una metamorfosis colectiva en tiempo real.</span>
+          <span class="mode-tags">
+            <i>IA Generativa</i>
+            <i>Metamorfosis 3D</i>
+          </span>
+        </span>
+        <span class="mode-go" aria-hidden="true">↗</span>
+      </a>
     </section>
 
-    <section id="musica">
-      <div class="sec-head">
-        <h2>Videoclips y música oficial</h2>
-        <span>Escucha a The Power Of The Pudú en YouTube y Spotify</span>
+    <footer class="pro-footer">
+      <div class="footer-meta">
+        <span class="footer-copy">© 2026 THE POWER OF THE PUDÚ · SANTIAGO, CHILE · ALL RIGHTS RESERVED</span>
+        <span class="footer-sub">LATIN METAL</span>
       </div>
-      <div class="media-grid">
-        <div>
-          <div class="yt-frame-wrap">
-            <iframe id="yt-main" src="https://www.youtube.com/embed/hwfsaGEj7PI?rel=0" title="The Power Of The Pudú en YouTube" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe>
-          </div>
-          <div class="yt-playlist" id="yt-playlist">
-            <button type="button" class="yt-pick active" data-yt="hwfsaGEj7PI"><img src="https://i.ytimg.com/vi/hwfsaGEj7PI/hqdefault.jpg" alt="Barsalitsuni"><span>Barsalitsuni (El gatito del final)</span></button>
-            <button type="button" class="yt-pick" data-yt="kHtNEA-v6fQ"><img src="https://i.ytimg.com/vi/kHtNEA-v6fQ/hqdefault.jpg" alt="Enchanted Castor"><span>Enchanted Castor (Videoclip)</span></button>
-            <button type="button" class="yt-pick" data-yt="18Rr-JbDBU8"><img src="https://i.ytimg.com/vi/18Rr-JbDBU8/hqdefault.jpg" alt="El Vals de la Hermandad"><span>El Vals de la Hermandad</span></button>
-            <button type="button" class="yt-pick" data-yt="vZFKxPyUxH8"><img src="https://i.ytimg.com/vi/vZFKxPyUxH8/hqdefault.jpg" alt="Oda al Pudú"><span>Oda Al Pudú</span></button>
-            <button type="button" class="yt-pick" data-yt="ukWu40cDMOM"><img src="https://i.ytimg.com/vi/ukWu40cDMOM/hqdefault.jpg" alt="La Llama Altiplaneta"><span>La Llama Altiplaneta</span></button>
-            <button type="button" class="yt-pick" data-yt="gQLuwCSinmA"><img src="https://i.ytimg.com/vi/gQLuwCSinmA/hqdefault.jpg" alt="El Chuña Metal"><span>El Chuña en el Multiverso del Metal</span></button>
-          </div>
-        </div>
-        <div class="card-box">
-          <h3>Escucha en Spotify</h3>
-          <iframe style="border-radius:12px;border:0;margin-bottom:14px" src="https://open.spotify.com/embed/artist/4BtrXf9c3jdgSQE16RpkF1?utm_source=generator&theme=0" width="100%" height="352" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify de The Power Of The Pudú"></iframe>
-          <p>¿Te gusta el proyecto? Apoya la música y el desarrollo de estas herramientas gratuitas adquiriendo los lanzamientos digitales en <a href="https://thepowerofthepudu.bandcamp.com/music" target="_blank" rel="noopener">Bandcamp</a> o suscribiéndote en <a href="https://www.youtube.com/@thepowerofthepudu" target="_blank" rel="noopener">YouTube</a>.</p>
-        </div>
+      <div class="footer-links">
+        <a href="https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1" target="_blank" rel="noopener noreferrer">Spotify</a>
+        <a href="https://www.youtube.com/@thepowerofthepudu" target="_blank" rel="noopener noreferrer">YouTube</a>
+        <a href="https://thepowerofthepudu.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a>
+        <a href="https://www.instagram.com/thepowerofthepudu" target="_blank" rel="noopener noreferrer">Instagram</a>
       </div>
-    </section>
-
-    <section id="historia">
-      <div class="sec-head">
-        <h2>Crónica, historia y Pudú Metal</h2>
-        <span>Origen chileno y archivo público</span>
-      </div>
-      <div class="editorial-grid">
-        <article class="card-box">
-          <h3>¿Qué es The Power Of The Pudú?</h3>
-          <p><strong>The Power Of The Pudú</strong> es una banda chilena nacida en Santiago que cruza power y metal progresivo con ritmos latinoamericanos, humor absurdo y respeto por la fauna nativa. Desde lanzamientos tempranos como <em>Barsalitsuni (El Gatito del Final)</em> y el EP <em>El Viaje del Pudú</em> hasta temas como <em>Huemul of Light</em>, <em>SANKYOKUJIKAN</em> y <em>Enchanted Castor</em>, el proyecto combina virtuosismo musical con cultura de internet y videojuegos.</p>
-          <p>En 2025 la banda compartió escenario junto a <strong>Nanowar Of Steel</strong> en Chile, consolidando esa mezcla lúdica de metal épico y comedia en vivo.</p>
-        </article>
-        <article class="card-box">
-          <h3>Archivo de prensa y fichas públicas</h3>
-          <ul>
-            <li><a href="https://www.metal-archives.com/bands/The_Power_of_the_Pud%C3%BA/3540457908" target="_blank" rel="noopener">Encyclopaedia Metallum (Metal Archives)</a> — ficha histórica y alineación.</li>
-            <li><a href="https://powerofmetal.cl/live-review-nanowar-en-chile-2025/" target="_blank" rel="noopener">PowerOfMetal.cl (2025)</a> — crónica del show en vivo junto a Nanowar Of Steel.</li>
-            <li><a href="https://www.irock.cl/la-banda-nacional-de-power-metal-the-power-of-the-pudu-estrena-nuevo-single-y-video/" target="_blank" rel="noopener">iRock — Huemul of Light</a> — estreno y colaboración vocal de Carolina R. Moreno.</li>
-            <li><a href="https://www.irock.cl/the-power-of-the-pudu-video-2020/" target="_blank" rel="noopener">iRock — SANKYOKUJIKAN</a> — estreno audiovisual y concepto musical.</li>
-          </ul>
-        </article>
-        <article class="card-box">
-          <h3>El pudú real (<em>Pudu puda</em>)</h3>
-          <p>El pudú del sur es uno de los ciervos más pequeños del mundo. Habita los bosques templados lluviosos de Chile y Argentina, desde el Maule hasta Aysén, alimentándose de brotes, hojas de nalca, maqui y cortezas.</p>
-          <p>El Ministerio del Medio Ambiente de Chile lo clasifica como especie <strong>Vulnerable</strong> debido a la fragmentación del bosque nativo, incendios, atropellos y ataques de perros sin supervisión. Conoce más en las fichas oficiales de <a href="https://simbio.mma.gob.cl/Especies/Details/4604" target="_blank" rel="noopener">MMA Simbio</a> y <a href="https://www.conaf.cl/conaf-identifica-pudu-en-reserva-nacional-mocho-choshuenco/" target="_blank" rel="noopener">CONAF</a>.</p>
-        </article>
-      </div>
-    </section>
+    </footer>
   </main>
 
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-col">
-        <h5>PuduPower · TPOTP</h5>
-        <p>Portal oficial de apps interactivas y música de The Power Of The Pudú desde Santiago de Chile.</p>
-      </div>
-      <div class="footer-col">
-        <h5>Ecosistema</h5>
-        <ul>
-          <li><a href="https://ytp.pudupower.com">Pudu Poop Maker</a></li>
-          <li><a href="https://barsalitsuni.pudupower.com">Barsalitsuni Generator</a></li>
-          <li><a href="https://altiplanet.pudupower.com">La Llama Altiplaneta</a></li>
-          <li><a href="https://simulator.pudupower.com">Pudú Simulator</a></li>
-          <li><a href="https://chat.pudupower.com">PudúChat</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Documentación</h5>
-        <ul>
-          <li><a href="https://ytp.pudupower.com/guias/">Guías de edición</a></li>
-          <li><a href="/about.html">Acerca de</a></li>
-          <li><a href="/privacy-policy.html">Privacidad</a></li>
-          <li><a href="/terms.html">Términos</a></li>
-          <li><a href="/contact.html">Contacto</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div>&copy; 2026 PuduPower · The Power Of The Pudú</div>
-      <div><a href="/privacy-policy.html">Privacidad</a> &middot; <a href="/terms.html">Términos</a> &middot; <a href="/contact.html">Contacto</a></div>
-    </div>
-  </footer>
-
-  <script>
-    const ytFrame = document.getElementById('yt-main');
-    document.querySelectorAll('.yt-pick').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.yt-pick').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        ytFrame.src = `https://www.youtube.com/embed/${btn.dataset.yt}?autoplay=1&rel=0`;
-      });
-    });
-  </script>
+  <script src="./physical-ui.js?v=20261126f"></script>
+  <script type="module" src="./glass-ui.js?v=20261126f"></script>
 </body>
 </html>
