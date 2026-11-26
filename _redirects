@@ -1,0 +1,7 @@
+/ytp https://ytp.pudupower.com 301
+/ytp/* https://ytp.pudupower.com/:splat 301
+/poop https://ytp.pudupower.com 301
+/barsalitsuni https://barsalitsuni.pudupower.com 301
+/altiplanet https://altiplanet.pudupower.com 301
+/chat https://chat.pudupower.com 301
+/simulator https://simulator.pudupower.com 301
