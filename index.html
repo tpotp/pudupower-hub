@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-  <!-- SEO Principal -->
-  <title>The Power of the Pudú | Metal Progresivo Chileno &amp; Hub 3D</title>
-  <meta name="description" content="Hub oficial de The Power of the Pudú, banda chilena de metal progresivo y experimental. Explora el visualizador 3D, música, Pudú Simulator y generadores audiovisuales." />
+  <!-- SEO Principal & AdSense -->
+  <title>The Power of the Pudú | Metal Progresivo Chileno, YTP Maker &amp; Hub 3D</title>
+  <meta name="description" content="Hub oficial de The Power of the Pudú (Santiago, Chile). Escucha nuestro metal progresivo y latin metal, crea videos en Pudu Poop Maker (YTP), Barsalitsuni 3D y explora PuduWorld." />
+  <meta name="keywords" content="The Power of the Pudú, metal progresivo chileno, latin metal, Pudu Poop Maker, generador YTP online, Barsalitsuni, seam carving 3D, PuduWorld, pudú simulator, banda chilena metal" />
   <meta name="author" content="The Power of the Pudú" />
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
   <meta name="googlebot" content="index, follow" />
+  <meta name="google-adsense-account" content="ca-pub-9855270154071776" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9855270154071776" crossorigin="anonymous"></script>
 
   <!-- Canonical y Hreflang -->
   <link rel="canonical" href="https://pudupower.com/" />
@@ -169,13 +172,13 @@
       },
       {
         "@type": "SoftwareApplication",
-        "@id": "https://barsalitsuni.vercel.app/#app",
+        "@id": "https://barsalitsuni.pudupower.com/#app",
         "name": "Barsalitsuni Generator",
-        "url": "https://barsalitsuni.vercel.app",
+        "url": "https://barsalitsuni.pudupower.com",
         "applicationCategory": "MultimediaApplication",
         "operatingSystem": "Web Browser",
         "browserRequirements": "Requires JavaScript. Modern HTML5 browser.",
-        "description": "Generador audiovisual experimental y visualizador interactivo creado por The Power of the Pudú.",
+        "description": "Generador audiovisual experimental y sintetizador visual 3D con seam carving creado por The Power of the Pudú.",
         "author": {
           "@id": "https://pudupower.com/#musicgroup"
         },
@@ -187,9 +190,9 @@
       },
       {
         "@type": "SoftwareApplication",
-        "@id": "https://puduworld.vercel.app/#app",
+        "@id": "https://simulator.pudupower.com/#app",
         "name": "PuduWorld · Pudú Simulator × PuduChat",
-        "url": "https://puduworld.vercel.app",
+        "url": "https://simulator.pudupower.com",
         "applicationCategory": "GameApplication",
         "operatingSystem": "Web Browser",
         "browserRequirements": "Requires JavaScript and WebGL.",
@@ -202,6 +205,36 @@
           "price": "0",
           "priceCurrency": "USD"
         }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://pudupower.com/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Qué es The Power of the Pudú?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The Power of the Pudú es una banda chilena de metal progresivo y latin metal experimental de Santiago de Chile, que combina música técnica con experiencias web 3D, generadores de video y simuladores gratuitos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo funcionan Pudu Poop Maker y Barsalitsuni?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Son herramientas gratuitas que corren directo en tu navegador usando WebCodecs, WebGL y WebAssembly, sin subir tus archivos a servidores externos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Dónde escuchar la música de The Power of the Pudú?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Puedes escuchar toda nuestra discografía en Spotify, YouTube y Bandcamp desde los enlaces oficiales de pudupower.com."
+            }
+          }
+        ]
       }
     ]
   }
@@ -748,6 +781,119 @@
       color: var(--neon-green, #00ffaa);
       transform: translate(3px, -3px);
     }
+
+    /* Sección editorial SEO & Promoción de la Banda (debajo del viewport 3D 100dvh) */
+    .band-editorial {
+      position: relative;
+      z-index: 25;
+      width: 100%;
+      max-width: 1100px;
+      margin: 2.5rem auto 0;
+      padding: 2.5rem clamp(1.2rem, 3.5vw, 2.5rem) 2rem;
+      background: linear-gradient(180deg, rgba(6, 11, 8, 0.88) 0%, rgba(5, 8, 6, 0.96) 100%);
+      border-top: 1px solid rgba(0, 255, 170, 0.22);
+      border-radius: 28px 28px 0 0;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      color: #e6efe9;
+    }
+
+    .band-editorial h2 {
+      font-family: var(--font-display, 'Cinzel', serif);
+      font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+      color: #ffffff;
+      margin: 0 0 0.75rem;
+      letter-spacing: 0.04em;
+    }
+
+    .band-editorial h3 {
+      font-family: var(--font-tech, 'Orbitron', sans-serif);
+      font-size: 0.95rem;
+      color: var(--neon-green, #00ffaa);
+      margin: 0 0 0.5rem;
+      letter-spacing: 0.08em;
+    }
+
+    .band-editorial p {
+      font-size: 0.94rem;
+      line-height: 1.65;
+      color: rgba(230, 239, 233, 0.84);
+      margin: 0 0 1rem;
+    }
+
+    .editorial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .editorial-card {
+      background: rgba(12, 22, 16, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      border-radius: 18px;
+      padding: 1.25rem;
+    }
+
+    .editorial-card a {
+      color: var(--neon-green, #00ffaa);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .editorial-card a:hover {
+      text-decoration: underline;
+    }
+
+    .band-cta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 1rem 0 1.8rem;
+    }
+
+    .band-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: rgba(0, 255, 170, 0.12);
+      border: 1px solid rgba(0, 255, 170, 0.35);
+      color: #ffffff;
+      text-decoration: none;
+      font-family: var(--font-tech, 'Orbitron', sans-serif);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+
+    .band-cta-btn:hover {
+      background: rgba(0, 255, 170, 0.24);
+      transform: translateY(-2px);
+    }
+
+    .faq-list details {
+      background: rgba(12, 22, 16, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      padding: 0.85rem 1.1rem;
+      margin-bottom: 0.65rem;
+    }
+
+    .faq-list summary {
+      cursor: pointer;
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 0.92rem;
+    }
+
+    .faq-list details p {
+      margin: 0.6rem 0 0;
+      font-size: 0.88rem;
+    }
   </style>
 </head>
 <body>
@@ -820,24 +966,6 @@
       </nav>
     </header>
 
-    <section
-      aria-hidden="false"
-      aria-label="Descripción de The Power of the Pudú"
-      style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;"
-    >
-      <h2>Sobre The Power of the Pudú — Banda de Metal Progresivo Chileno</h2>
-      <p>
-        <strong>The Power of the Pudú</strong> es una banda de <strong>metal progresivo y experimental de Chile</strong>
-        que fusiona riffs técnicos, compases irregulares y atmósfera avant-garde con experiencias digitales interactivas.
-        Inspirados en el pudú —el ciervo más pequeño del mundo y símbolo de la fauna nativa chilena—, este sitio web
-        funciona como un hub interactivo en 3D desarrollado con Three.js donde puedes escuchar nuestra música en Spotify
-        y Bandcamp, ver videos en YouTube y probar nuestras aplicaciones web oficiales:
-        <strong>Pudu Poop Maker</strong> (generador audiovisual YTP y caos sonoro),
-        <strong>Barsalitsuni Generator</strong> (sintetizador visual experimental) y
-        <strong>Pudú Simulator</strong> (simulador 3D en navegador).
-      </p>
-    </section>
-
     <!-- Safe-Zone central donde la mascotita 3D te acompaña -->
     <div class="pudu-stage-zone" aria-hidden="true"></div>
 
@@ -893,9 +1021,60 @@
         <a href="https://www.youtube.com/@thepowerofthepudu" target="_blank" rel="noopener noreferrer">YouTube</a>
         <a href="https://thepowerofthepudu.bandcamp.com" target="_blank" rel="noopener noreferrer">Bandcamp</a>
         <a href="https://www.instagram.com/thepowerofthepudu" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="/about.html">Sobre la Banda</a>
+        <a href="/contact.html">Contacto</a>
+        <a href="/privacy-policy.html">Privacidad</a>
+        <a href="/terms.html">Términos</a>
       </div>
     </footer>
   </main>
+
+  <section class="band-editorial" aria-label="The Power of the Pudú — Música, Historia y Herramientas">
+    <h2>The Power of the Pudú — Metal Progresivo Chileno &amp; Universo Interactivo</h2>
+    <p>
+      <strong>The Power of the Pudú</strong> es una banda independiente de <strong>metal progresivo, latin metal y música experimental</strong> originaria de Santiago, Chile. Inspirados en el pudú —el ciervo más pequeño del mundo y guardián del bosque valdiviano—, unimos riffs técnicos, polirritmias y estética andina futurista con herramientas audiovisuales gratuitas que corren directo en tu navegador.
+    </p>
+    <div class="band-cta-bar">
+      <a class="band-cta-btn" href="https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1" target="_blank" rel="noopener noreferrer">Escuchar en Spotify ↗</a>
+      <a class="band-cta-btn" href="https://www.youtube.com/@thepowerofthepudu" target="_blank" rel="noopener noreferrer">Ver en YouTube ↗</a>
+      <a class="band-cta-btn" href="https://thepowerofthepudu.bandcamp.com" target="_blank" rel="noopener noreferrer">Discografía en Bandcamp ↗</a>
+      <a class="band-cta-btn" href="https://www.instagram.com/thepowerofthepudu" target="_blank" rel="noopener noreferrer">Seguir en Instagram ↗</a>
+    </div>
+
+    <div class="editorial-grid">
+      <article class="editorial-card">
+        <h3>Pudu Poop Maker (YTP Online)</h3>
+        <p>Editor y generador automático de YouTube Poop (YTP) en tiempo real con WebCodecs y detección facial local. Ideal para crear videos caóticos, memes y remixes musicales sin instalar nada.</p>
+        <a href="https://ytp.pudupower.com" target="_blank" rel="noopener noreferrer">Abrir ytp.pudupower.com ↗</a>
+      </article>
+      <article class="editorial-card">
+        <h3>Barsalitsuni 3D Synth</h3>
+        <p>Sintetizador visual 3D y procesador de seam carving (liquid rescale) en WebAssembly y WebGL inspirado en nuestra estética avant-garde chilena. Distorsiona videos e imágenes al ritmo del metal.</p>
+        <a href="https://barsalitsuni.pudupower.com" target="_blank" rel="noopener noreferrer">Abrir barsalitsuni.pudupower.com ↗</a>
+      </article>
+      <article class="editorial-card">
+        <h3>PuduWorld · Pudú Simulator</h3>
+        <p>Simulador 3D multijugador en navegador ambientado en el bosque valdiviano, con física orgánica, inteligencia artificial conversacional y chat shardeado en tiempo real.</p>
+        <a href="https://simulator.pudupower.com" target="_blank" rel="noopener noreferrer">Abrir simulator.pudupower.com ↗</a>
+      </article>
+    </div>
+
+    <div class="faq-list">
+      <h3>Preguntas Frecuentes</h3>
+      <details>
+        <summary>¿Qué es The Power of the Pudú?</summary>
+        <p>Somos una banda chilena de metal progresivo y latin metal experimental de Santiago de Chile. Creamos música pesada acompañada de experiencias web 3D, videojuegos y editores multimedia gratuitos.</p>
+      </details>
+      <details>
+        <summary>¿Las herramientas de video y el simulador son gratis?</summary>
+        <p>Sí, Pudu Poop Maker, Barsalitsuni y PuduWorld son 100% gratuitos y se ejecutan localmente en tu navegador (PC o celular) sin subir tus archivos a servidores externos.</p>
+      </details>
+      <details>
+        <summary>¿Cómo puedo apoyar o contactar a la banda?</summary>
+        <p>Escuchando nuestros temas en Spotify, YouTube y Bandcamp, compartiendo los videos creados en pudupower.com o escribiéndonos desde la <a href="/contact.html" style="color:#00ffaa;">página de contacto</a>.</p>
+      </details>
+    </div>
+  </section>
 
   <script src="./physical-ui.js?v=20261126g"></script>
   <script type="module" src="./glass-ui.js?v=20261126g"></script>
