@@ -22,7 +22,7 @@
       cards: {
         poop: {
           title: 'Pudu Poop Maker',
-          desc: 'Caos sonoro y YTP en estado puro: blast beats, cortes esquizofrénicos y metal progresivo sin frenos.',
+          desc: 'Caos sonoro y YTP en estado puro: blast beats, cortes extremos y metal progresivo sin frenos.',
           tags: ['Blast Beats', 'Caos YTP']
         },
         barsa: {
@@ -208,7 +208,7 @@
       cards: {
         poop: {
           title: 'Pudu Poop Maker',
-          desc: 'Caos sonoro e YTP em estado puro: blast beats, cortes esquizofrênicos e metal progressivo sem freios.',
+          desc: 'Caos sonoro e YTP em estado puro: blast beats, cortes extremos e metal progressivo sem freios.',
           tags: ['Blast Beats', 'Caos YTP']
         },
         barsa: {

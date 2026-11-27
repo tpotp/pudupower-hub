@@ -600,7 +600,7 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
     {
       sel: '#btn-poop',
       title: 'Pudu Poop Maker',
-      desc: 'Caos sonoro y YTP en estado puro: blast beats, cortes esquizofrénicos y metal progresivo sin frenos.',
+      desc: 'Caos sonoro y YTP en estado puro: blast beats, cortes extremos y metal progresivo sin frenos.',
       tags: ['Blast Beats', 'Caos YTP'],
       icon: '💩',
       iconImg: 'assets/poop_maker_logo.jpg',
@@ -614,7 +614,7 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
       grad1: 'rgba(10, 20, 12, 0.48)',
       grad2: 'rgba(6, 14, 8, 0.62)',
       ribbon: null,
-      speech: '¡Pudu Poop Maker! Caos sonoro y YTP con blast beats esquizofrénicos.'
+      speech: '¡Pudu Poop Maker! Caos sonoro y YTP con blast beats extremos.'
     },
     {
       sel: '#btn-barsa',
@@ -839,19 +839,17 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
   let audioCtx = null;
   let audioReady = false;
 
+  function isPageInFocus() {
+    return !doc.hidden && doc.visibilityState === 'visible' && (typeof doc.hasFocus !== 'function' || doc.hasFocus());
+  }
+
   function getACtx() {
-    if (!audioCtx) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) audioCtx = new AudioCtx();
-    }
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().catch(() => {});
-    }
-    return audioCtx;
+    if (!isPageInFocus()) return null;
+    return getPuduAudioCtx();
   }
 
   function unlockAudio() {
-    if (audioReady) return;
+    if (audioReady || !isPageInFocus()) return;
     const ac = getACtx();
     if (ac) {
       if (ac.state === 'suspended') ac.resume().catch(() => {});
@@ -861,19 +859,17 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
   window.addEventListener('pointerdown', unlockAudio, { once: true, passive: true });
   window.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
 
-  function isPageInFocus() {
-    return !doc.hidden && doc.visibilityState === 'visible' && (typeof doc.hasFocus !== 'function' || doc.hasFocus());
-  }
-
   function playPuduMeow(pitch = 1.0, style = 'normal') {
     if (!isPageInFocus()) return;
     try {
       const ac = getACtx();
       if (!ac) return;
+      const bus = getPuduAudioBus(ac);
+      if (!bus) return;
       const master = ac.createGain();
       master.gain.setValueAtTime(0, ac.currentTime);
-      master.gain.linearRampToValueAtTime(0.22, ac.currentTime + 0.03);
-      master.connect(ac.destination);
+      master.gain.linearRampToValueAtTime(0.20, ac.currentTime + 0.03);
+      master.connect(bus.input);
       const carrier = ac.createOscillator();
       carrier.type = 'triangle';
       const base = 200 * pitch;
@@ -2528,8 +2524,71 @@ const puduBrain=new PuduAI();
 
   /* ---------- Motor de Voz Tierna & Visemas del Pudú ---------- */
   let puduAudioCtx = null;
+  let puduAudioBus = null;
   let puduVoiceNodes = [];
   let cachedEsVoice = null;
+
+  // Bus ambiental compartido: dry cálido + ConvolverNode largo (decay ~4.2s) + master focus-gated
+  function getPuduAudioBus(ctx) {
+    if (!ctx) return null;
+    if (puduAudioBus && puduAudioBus.ctx === ctx) {
+      if (isPageInFocus()) {
+        puduAudioBus.master.gain.cancelScheduledValues(ctx.currentTime);
+        puduAudioBus.master.gain.setTargetAtTime(1.0, ctx.currentTime, 0.015);
+      }
+      return puduAudioBus;
+    }
+    const input = ctx.createGain();
+    const dry = ctx.createGain();
+    const wet = ctx.createGain();
+    const reverbLp = ctx.createBiquadFilter();
+    const convolver = ctx.createConvolver();
+    const comp = ctx.createDynamicsCompressor();
+    const master = ctx.createGain();
+
+    dry.gain.value = 0.72;
+    wet.gain.value = 0.56;
+    reverbLp.type = 'lowpass';
+    reverbLp.frequency.value = 2600;
+    reverbLp.Q.value = 0.7;
+
+    // Impulse response estéreo de 4.2s con decay exponencial aterciopelado y shimmer cálido
+    const sr = ctx.sampleRate || 44100;
+    const durSec = 4.2;
+    const len = Math.floor(sr * durSec);
+    const ir = ctx.createBuffer(2, len, sr);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = ir.getChannelData(ch);
+      let lpState = 0;
+      for (let i = 0; i < len; i++) {
+        const tNorm = i / len;
+        // Pre-delay suave (~18ms) + caída larga exponencial
+        const fadeIn = Math.min(1, i / (sr * 0.018));
+        const env = fadeIn * Math.pow(1 - tNorm, 3.1);
+        const white = Math.random() * 2 - 1;
+        lpState = lpState * 0.72 + white * 0.28;
+        data[i] = lpState * env;
+      }
+    }
+    convolver.buffer = ir;
+
+    comp.threshold.value = -16;
+    comp.knee.value = 18;
+    comp.ratio.value = 3;
+    master.gain.value = isPageInFocus() ? 1.0 : 0.0;
+
+    input.connect(dry);
+    input.connect(convolver);
+    convolver.connect(reverbLp);
+    reverbLp.connect(wet);
+    dry.connect(comp);
+    wet.connect(comp);
+    comp.connect(master);
+    master.connect(ctx.destination);
+
+    puduAudioBus = { ctx, input, dry, wet, master };
+    return puduAudioBus;
+  }
 
   const VISEME_TABLE = {
     REST: { open: 0.00, width: 1.00, depth: 0.60, tongue: 0.00, snoutZ: 0.000, snoutY: 0.000 },
@@ -2568,12 +2627,17 @@ const puduBrain=new PuduAI();
   };
 
   function getPuduAudioCtx() {
+    if (!isPageInFocus()) return null;
     if (!puduAudioCtx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (AC) puduAudioCtx = new AC();
     }
     if (puduAudioCtx && puduAudioCtx.state === 'suspended') {
       puduAudioCtx.resume().catch(() => {});
+    }
+    if (puduAudioCtx && puduAudioBus && puduAudioBus.master) {
+      puduAudioBus.master.gain.cancelScheduledValues(puduAudioCtx.currentTime);
+      puduAudioBus.master.gain.setTargetAtTime(1.0, puduAudioCtx.currentTime, 0.015);
     }
     return puduAudioCtx;
   }
@@ -2672,35 +2736,38 @@ const puduBrain=new PuduAI();
     return { timeline, totalDuration: t + 0.18 };
   }
 
-  function playPuduChirp(ctx, when, duration = 0.14) {
+  function playPuduChirp(ctx, when, duration = 0.18) {
     if (!isPageInFocus()) return;
     try {
+      const bus = getPuduAudioBus(ctx);
+      if (!bus) return;
       const osc = ctx.createOscillator();
       const sub = ctx.createOscillator();
       const filter = ctx.createBiquadFilter();
       const gain = ctx.createGain();
 
-      osc.type = 'triangle';
-      sub.type = 'sine';
-      osc.frequency.setValueAtTime(520, when);
-      osc.frequency.exponentialRampToValueAtTime(860, when + duration * 0.65);
-      osc.frequency.exponentialRampToValueAtTime(740, when + duration);
+      // Trino cristalino etéreo en intervalo de quinta dulce
+      osc.type = 'sine';
+      sub.type = 'triangle';
+      osc.frequency.setValueAtTime(587.33, when); // D5
+      osc.frequency.exponentialRampToValueAtTime(880, when + duration * 0.55); // A5
+      osc.frequency.exponentialRampToValueAtTime(1046.5, when + duration); // C6
 
-      sub.frequency.setValueAtTime(1040, when);
-      sub.frequency.exponentialRampToValueAtTime(1480, when + duration);
+      sub.frequency.setValueAtTime(1174.66, when);
+      sub.frequency.exponentialRampToValueAtTime(1760, when + duration);
 
       filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(2800, when);
-      filter.Q.value = 2.2;
+      filter.frequency.setValueAtTime(3200, when);
+      filter.Q.value = 1.4;
 
       gain.gain.setValueAtTime(0.0001, when);
-      gain.gain.linearRampToValueAtTime(0.11, when + 0.02);
+      gain.gain.linearRampToValueAtTime(0.085, when + 0.03);
       gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
 
       osc.connect(filter);
       sub.connect(filter);
       filter.connect(gain);
-      gain.connect(ctx.destination);
+      gain.connect(bus.input);
 
       osc.start(when);
       sub.start(when);
@@ -2714,62 +2781,98 @@ const puduBrain=new PuduAI();
     if (!isPageInFocus()) return;
     const ctx = getPuduAudioCtx();
     if (!ctx) return;
+    const bus = getPuduAudioBus(ctx);
+    if (!bus) return;
 
-    const now = ctx.currentTime + 0.02;
+    const now = ctx.currentTime + 0.03;
     const master = ctx.createGain();
     const lp = ctx.createBiquadFilter();
     lp.type = 'lowpass';
-    lp.frequency.value = 3400;
-    master.gain.value = 0.22;
+    lp.frequency.value = 3600;
+    lp.Q.value = 0.7;
+    master.gain.value = 0.36;
     lp.connect(master);
-    master.connect(ctx.destination);
+    master.connect(bus.input);
 
-    // Agrupamos por sílabas vocálicas para que suene dulce y musical, no entrecortado
+    // Escala pentatónica dulce (D mayor/Lidia) para melodía expresiva sin aspereza
+    const MELODY_RATIOS = [1.0, 1.125, 1.26, 1.498, 1.682, 1.498, 1.26, 1.125];
     let lastPlayTime = -1;
-    timeline.forEach((seg, idx) => {
+    let noteStep = 0;
+
+    timeline.forEach((seg) => {
       if (!'AEIOU'.includes(seg.viseme)) return;
       const tStart = now + seg.t0;
-      if (tStart - lastPlayTime < 0.075) return; // Máx ~13 sílabas/seg
+      if (tStart - lastPlayTime < 0.09) return;
       lastPlayTime = tStart;
 
       const fmt = FORMANT_VOWELS[seg.viseme];
-      const dur = Math.min(0.14, Math.max(0.075, (seg.t1 - seg.t0) * 1.15));
-      const baseF0 = (490 + Math.sin(idx * 1.3) * 45 + seg.stress * 55) * fmt.pitchMul;
+      const dur = Math.min(0.20, Math.max(0.10, (seg.t1 - seg.t0) * 1.45));
+      const ratio = MELODY_RATIOS[noteStep % MELODY_RATIOS.length];
+      noteStep++;
+      const baseF0 = (440 * ratio + seg.stress * 28) * (0.95 + (fmt.pitchMul - 1) * 0.6);
 
-      const osc = ctx.createOscillator();
+      // Cuerpo cálido (sine) + matiz vocal suave (triangle) + armónico cristalino (sine 2x)
+      const oscCore = ctx.createOscillator();
+      const oscWarm = ctx.createOscillator();
+      const oscAir  = ctx.createOscillator();
+      const warmGain = ctx.createGain();
+      const airGain  = ctx.createGain();
       const vibrato = ctx.createOscillator();
       const vibGain = ctx.createGain();
       const f1 = ctx.createBiquadFilter();
       const f2 = ctx.createBiquadFilter();
+      const dryVoice = ctx.createGain();
       const env = ctx.createGain();
 
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(baseF0 * 0.96, tStart);
-      osc.frequency.exponentialRampToValueAtTime(baseF0 * 1.05, tStart + dur * 0.7);
+      oscCore.type = 'sine';
+      oscWarm.type = 'triangle';
+      oscAir.type  = 'sine';
 
-      vibrato.frequency.value = 5.5;
-      vibGain.gain.value = 8;
+      oscCore.frequency.setValueAtTime(baseF0 * 0.97, tStart);
+      oscCore.frequency.exponentialRampToValueAtTime(baseF0 * 1.03, tStart + dur * 0.65);
+      oscWarm.frequency.setValueAtTime(baseF0 * 0.97, tStart);
+      oscWarm.frequency.exponentialRampToValueAtTime(baseF0 * 1.03, tStart + dur * 0.65);
+      oscAir.frequency.setValueAtTime(baseF0 * 2.0, tStart);
+
+      vibrato.frequency.value = 5.2;
+      vibGain.gain.value = 5.5;
       vibrato.connect(vibGain);
-      vibGain.connect(osc.frequency);
+      vibGain.connect(oscCore.frequency);
+      vibGain.connect(oscWarm.frequency);
 
-      f1.type = 'bandpass'; f1.frequency.value = fmt.f1; f1.Q.value = 4.5;
-      f2.type = 'bandpass'; f2.frequency.value = fmt.f2; f2.Q.value = 5.5;
+      warmGain.gain.value = 0.42;
+      airGain.gain.value = 0.14;
+      dryVoice.gain.value = 0.55;
+
+      f1.type = 'bandpass'; f1.frequency.value = fmt.f1; f1.Q.value = 2.6;
+      f2.type = 'bandpass'; f2.frequency.value = fmt.f2; f2.Q.value = 3.2;
 
       env.gain.setValueAtTime(0.0001, tStart);
-      env.gain.linearRampToValueAtTime(0.85, tStart + 0.018);
+      env.gain.linearRampToValueAtTime(0.92, tStart + 0.028);
+      env.gain.setValueAtTime(0.75, tStart + dur * 0.55);
       env.gain.exponentialRampToValueAtTime(0.0001, tStart + dur);
 
-      osc.connect(f1);
-      osc.connect(f2);
+      oscCore.connect(dryVoice);
+      oscWarm.connect(warmGain);
+      oscAir.connect(airGain);
+      warmGain.connect(f1);
+      warmGain.connect(f2);
+      airGain.connect(f2);
+      dryVoice.connect(env);
       f1.connect(env);
       f2.connect(env);
       env.connect(lp);
 
-      osc.start(tStart);
+      oscCore.start(tStart);
+      oscWarm.start(tStart);
+      oscAir.start(tStart);
       vibrato.start(tStart);
-      osc.stop(tStart + dur + 0.02);
-      vibrato.stop(tStart + dur + 0.02);
-      puduVoiceNodes.push(osc, vibrato);
+      const stopT = tStart + dur + 0.03;
+      oscCore.stop(stopT);
+      oscWarm.stop(stopT);
+      oscAir.stop(stopT);
+      vibrato.stop(stopT);
+      puduVoiceNodes.push(oscCore, oscWarm, oscAir, vibrato);
     });
   }
 
@@ -2794,6 +2897,12 @@ const puduBrain=new PuduAI();
     if ('speechSynthesis' in window) {
       try { window.speechSynthesis.cancel(); } catch (_) {}
     }
+    if (puduAudioCtx && puduAudioBus && puduAudioBus.master) {
+      try {
+        puduAudioBus.master.gain.cancelScheduledValues(puduAudioCtx.currentTime);
+        puduAudioBus.master.gain.setValueAtTime(0, puduAudioCtx.currentTime);
+      } catch (_) {}
+    }
     if (puduAudioCtx && puduAudioCtx.state === 'running') {
       puduAudioCtx.suspend().catch(() => {});
     }
@@ -2803,11 +2912,11 @@ const puduBrain=new PuduAI();
   }
 
   /**
-   * Voz dulce del Pudú
+   * Voz sintetizada dulce del Pudú con reverb ambiental larga (~4.2s decay)
    * @param {string} text
-   * @param {'hybrid'|'pudu'|'tts'} mode - 'hybrid' = trino mágico + TTS dulce; 'pudu' = 100% Web Audio formantes
+   * @param {'pudu'|'hybrid'|'tts'} mode - 'pudu' = síntesis Web Audio + reverb ambiental (por defecto)
    */
-  function speakPuduVoice(text, mode = 'hybrid') {
+  function speakPuduVoice(text, mode = 'pudu') {
     if (!text || !isPageInFocus()) return;
     stopMouthAnim();
 
@@ -3509,12 +3618,23 @@ const puduBrain=new PuduAI();
       });
     });
 
-    // Al volver a la pestaña principal, cualquier botón que haya volado regresa suavemente a su lugar
+    // Si la pestaña pierde foco o se oculta, cortar de inmediato todo audio y reverb
     doc.addEventListener('visibilitychange', () => {
-      if (doc.visibilityState === 'visible') {
+      if (doc.visibilityState === 'visible' && isPageInFocus()) {
         lastFrameTime = performance.now();
         returnAllFlyingCards();
+      } else {
+        stopAllPuduSpeech();
       }
+    });
+    window.addEventListener('blur', () => {
+      stopAllPuduSpeech();
+    });
+    window.addEventListener('pagehide', () => {
+      stopAllPuduSpeech();
+    });
+    doc.addEventListener('freeze', () => {
+      stopAllPuduSpeech();
     });
     window.addEventListener('focus', () => {
       lastFrameTime = performance.now();
