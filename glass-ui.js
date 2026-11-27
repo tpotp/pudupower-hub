@@ -2937,6 +2937,8 @@ const puduBrain=new PuduAI();
 
   function returnCardFlight(card) {
     if (!card.flight.active || card.flight.returning) return;
+    card.targetPress = 0;
+    card.hovered = false;
     card.flight.returning = true;
     card.flight.returnStartTime = performance.now();
     card.flight.returnFrom = {
@@ -2949,6 +2951,16 @@ const puduBrain=new PuduAI();
       scale: card.group.scale.x,
       opacity: card.faceMesh ? card.faceMesh.material.opacity : 1.0
     };
+  }
+
+  function returnAllFlyingCards() {
+    cards.forEach((card) => {
+      card.targetPress = 0;
+      card.hovered = false;
+      if (card.flight.active && !card.flight.returning) {
+        returnCardFlight(card);
+      }
+    });
   }
 
   function updateCard(card, dt, W, H, ex, ey) {
@@ -3155,6 +3167,22 @@ const puduBrain=new PuduAI();
         e.preventDefault();
         triggerCardFlight(card, e);
       });
+    });
+
+    // Al volver a la pestaña principal, cualquier botón que haya volado regresa suavemente a su lugar
+    doc.addEventListener('visibilitychange', () => {
+      if (doc.visibilityState === 'visible') {
+        lastFrameTime = performance.now();
+        returnAllFlyingCards();
+      }
+    });
+    window.addEventListener('focus', () => {
+      lastFrameTime = performance.now();
+      returnAllFlyingCards();
+    });
+    window.addEventListener('pageshow', () => {
+      lastFrameTime = performance.now();
+      returnAllFlyingCards();
     });
 
     // Saludo inicial
