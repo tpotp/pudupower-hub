@@ -105,13 +105,13 @@ import * as THREE from './vendor/three/three.module.js';
 
   /* ---------- 1 Single Volumetric God Ray / Optical Flares (After Effects Pro style, alpha-safe) ---------- */
   const godRayGroup = new THREE.Group();
-  const godRayBasePos = new THREE.Vector3(160, 340, -260);
+  const godRayBasePos = new THREE.Vector3(0, 380, -300);
   godRayGroup.position.copy(godRayBasePos);
-  godRayGroup.rotation.set(0.14, 0, -0.44);
+  godRayGroup.rotation.set(0.14, 0, -0.35);
 
-  const beamLength = 1550.0;
-  const beamTopRadius = 38.0;
-  const beamBottomRadius = 640.0;
+  const beamLength = 2200.0;
+  const beamTopRadius = 42.0;
+  const beamBottomRadius = 920.0;
   const beamGeo = new THREE.CylinderGeometry(beamTopRadius, beamBottomRadius, beamLength, 64, 1, true);
   beamGeo.translate(0, -beamLength * 0.5, 0);
 
@@ -120,8 +120,12 @@ import * as THREE from './vendor/three/three.module.js';
     uCoreColor: { value: new THREE.Color(0xfff4d6) },
     uRayColor: { value: new THREE.Color(0xff9e3d) },
     uScatterColor: { value: new THREE.Color(0x38e8b0) },
-    uIntensity: { value: 0.78 },
-    uMouseOffset: { value: new THREE.Vector2(0, 0) }
+    uIntensity: { value: 0.82 },
+    uMouseOffset: { value: new THREE.Vector2(0, 0) },
+    uPuduScreen: { value: new THREE.Vector2(0.5, 0.45) },
+    uLightScreen: { value: new THREE.Vector2(0.5, 0.85) },
+    uPuduRadius: { value: 0.11 },
+    uAspect: { value: 1.77 }
   };
 
   // CustomBlending OneFactor + OneFactor con alpha proporcional evita cuadros negros en canvas transparente
@@ -143,12 +147,15 @@ import * as THREE from './vendor/three/three.module.js';
       "varying vec2 vUv;",
       "varying vec3 vNormalView;",
       "varying vec3 vViewDir;",
+      "varying vec2 vScreenPos;",
       "void main() {",
       "  vUv = uv;",
       "  vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);",
       "  vNormalView = normalize(normalMatrix * normal);",
       "  vViewDir = normalize(-mvPosition.xyz);",
-      "  gl_Position = projectionMatrix * mvPosition;",
+      "  vec4 clipPos = projectionMatrix * mvPosition;",
+      "  vScreenPos = (clipPos.xy / max(clipPos.w, 0.0001)) * 0.5 + 0.5;",
+      "  gl_Position = clipPos;",
       "}"
     ].join("\n"),
     fragmentShader: [
@@ -159,15 +166,20 @@ import * as THREE from './vendor/three/three.module.js';
       "uniform vec3 uScatterColor;",
       "uniform float uIntensity;",
       "uniform vec2 uMouseOffset;",
+      "uniform vec2 uPuduScreen;",
+      "uniform vec2 uLightScreen;",
+      "uniform float uPuduRadius;",
+      "uniform float uAspect;",
       "varying vec2 vUv;",
       "varying vec3 vNormalView;",
       "varying vec3 vViewDir;",
+      "varying vec2 vScreenPos;",
       "#define TWO_PI 6.28318530718",
       "void main() {",
       "  float h = clamp(vUv.y, 0.0, 1.0);",
-      "  float verticalFade = pow(h, 1.15) * smoothstep(0.0, 0.28, h) * smoothstep(1.0, 0.88, h);",
+      "  float verticalFade = pow(h, 1.15) * smoothstep(0.0, 0.22, h) * smoothstep(1.0, 0.88, h);",
       "  float ndotv = abs(dot(normalize(vNormalView), normalize(vViewDir)));",
-      "  float edgeFade = pow(clamp(ndotv, 0.0, 1.0), 1.45);",
+      "  float edgeFade = pow(clamp(ndotv, 0.0, 1.0), 1.35);",
       "  float angle = vUv.x * TWO_PI;",
       "  float drift = uTime * 0.18 + uMouseOffset.x * 0.9;",
       "  float s1 = 0.5 + 0.5 * sin(angle * 4.0 + drift + h * 0.8);",
@@ -175,8 +187,18 @@ import * as THREE from './vendor/three/three.module.js';
       "  float s3 = 0.5 + 0.5 * sin(angle * 17.0 + uTime * 0.28);",
       "  float streaks = pow(s1, 1.8) * 0.50 + pow(s2, 2.5) * 0.35 + pow(s3, 3.5) * 0.25;",
       "  float cloudWave = 0.76 + 0.24 * sin(h * 5.0 - uTime * 0.35 + uMouseOffset.y * 1.2);",
-      "  float glow = verticalFade * edgeFade * (0.28 + streaks * 0.82) * cloudWave * uIntensity;",
-      "  vec3 col = mix(uRayColor, uCoreColor, pow(h, 1.6));",
+      "  // Truco barato de oclusion volumetrica + halo alrededor del pudu",
+      "  vec2 lp = (vScreenPos - uLightScreen) * vec2(uAspect, 1.0);",
+      "  vec2 lc = (uPuduScreen - uLightScreen) * vec2(uAspect, 1.0);",
+      "  float lcLen2 = max(dot(lc, lc), 0.0001);",
+      "  float proj = dot(lp, lc) / lcLen2;",
+      "  float perp = length(lp - lc * proj);",
+      "  float coneR = uPuduRadius * max(proj, 0.55);",
+      "  float inShadow = smoothstep(0.75, 1.05, proj);",
+      "  float shadowMask = mix(1.0, mix(0.28, 1.0, smoothstep(coneR * 0.45, coneR * 1.25, perp)), inShadow);",
+      "  float rimScatter = exp(-pow((perp - coneR * 0.92) / max(coneR * 0.42, 0.01), 2.0)) * smoothstep(0.65, 1.15, proj) * 0.45;",
+      "  float glow = verticalFade * edgeFade * (0.30 + streaks * 0.82 + rimScatter) * cloudWave * shadowMask * uIntensity;",
+      "  vec3 col = mix(uRayColor, uCoreColor, pow(h, 1.5));",
       "  col = mix(col, uScatterColor, (1.0 - h) * 0.14);",
       "  vec3 rgb = col * glow;",
       "  float a = clamp(glow * 0.45, 0.0, 0.65);",
@@ -185,7 +207,7 @@ import * as THREE from './vendor/three/three.module.js';
     ].join("\n")
   });
   const beamMesh = new THREE.Mesh(beamGeo, beamMat);
-  beamMesh.renderOrder = 2;
+  beamMesh.renderOrder = 0;
   godRayGroup.add(beamMesh);
 
   // Corona / Optical Flare principal (sin bordes cuadrados)
@@ -250,7 +272,7 @@ import * as THREE from './vendor/three/three.module.js';
   });
   const flareMesh = new THREE.Mesh(flareGeo, flareMat);
   flareMesh.position.set(0, 0, 8);
-  flareMesh.renderOrder = 3;
+  flareMesh.renderOrder = 1;
   godRayGroup.add(flareMesh);
 
   // Fantasmas cromáticos de lente (Iris Ghosts tipo After Effects Optical Flares)
@@ -297,13 +319,13 @@ import * as THREE from './vendor/three/three.module.js';
   });
   const ghostMeshA = new THREE.Mesh(ghostGeo, ghostMat);
   ghostMeshA.position.set(0, 0, -180);
-  ghostMeshA.renderOrder = 3;
+  ghostMeshA.renderOrder = 1;
   scene.add(ghostMeshA);
 
   const ghostMeshB = new THREE.Mesh(ghostGeo, ghostMat.clone());
   ghostMeshB.scale.setScalar(0.55);
   ghostMeshB.position.set(0, 0, -170);
-  ghostMeshB.renderOrder = 3;
+  ghostMeshB.renderOrder = 1;
   scene.add(ghostMeshB);
 
   // PointLight en espacio del mundo DELANTE de las tarjetas para crear reflejos reales en el vidrio
@@ -1536,6 +1558,7 @@ const puduBrain=new PuduAI();
   }
 
   pudu3dModel = buildProceduralPudu();
+  pudu3dModel.traverse((o) => { if (o.isMesh) o.renderOrder = 4; });
   puduGroup.add(pudu3dModel);
 
   /* ══════════════════════════════════════════════════════════════
@@ -3089,24 +3112,44 @@ const puduBrain=new PuduAI();
 
     eyeLight.position.set(ex * 1.2, ey * 1.2, EYE_D * 0.6);
 
-    // 1 Single God Ray: Física de resorte e inclinación reactiva al cursor/acelerómetro
+    // 1 Single God Ray: detrás del pudú, barriendo de total izquierda a total derecha
     const nEx = THREE.MathUtils.clamp(ex / 120, -1, 1);
     const nEy = THREE.MathUtils.clamp(ey / 120, -1, 1);
 
     if (godRayGroup) {
-      godRayGroup.position.x = godRayBasePos.x + nEx * 160;
-      godRayGroup.position.y = godRayBasePos.y + nEy * 70;
-      godRayGroup.rotation.z = -0.44 - nEx * 0.22;
+      const sunSweep = THREE.MathUtils.clamp(Math.sin(t * 0.24) * 0.35 + nEx * 0.85, -1, 1);
+      const halfSpanX = Math.max(W * 0.56, 360);
+      godRayGroup.position.x = sunSweep * halfSpanX;
+      godRayGroup.position.y = Math.max(H * 0.44, 280) + nEy * 70;
+      godRayGroup.position.z = -300;
+      godRayGroup.rotation.z = -sunSweep * 0.68;
       godRayGroup.rotation.x = 0.14 + nEy * 0.14;
 
+      // Escalar ancho del haz para cubrir de extremo a extremo
+      const beamScaleX = Math.max(1.0, W / 1100);
+      beamMesh.scale.set(beamScaleX, 1.0, beamScaleX);
+
       beamUniforms.uTime.value += dt;
-      beamUniforms.uMouseOffset.value.set(nEx, nEy);
+      beamUniforms.uMouseOffset.value.set(sunSweep, nEy);
+      beamUniforms.uAspect.value = W / Math.max(H, 1);
       flareUniforms.uTime.value += dt;
 
-      // Respiración de la luz e iluminación dinámica de tarjetas
+      // Proyectar centro del pudú y origen del sol para el truco de oclusión/halo detrás del pudú
+      if (pudu3dModel) {
+        const pCenter = new THREE.Vector3();
+        pudu3dModel.getWorldPosition(pCenter);
+        pCenter.y += 0.18 * puduScale;
+        pCenter.project(camera);
+        beamUniforms.uPuduScreen.value.set(pCenter.x * 0.5 + 0.5, pCenter.y * 0.5 + 0.5);
+        beamUniforms.uPuduRadius.value = THREE.MathUtils.clamp((puduScale * 0.72) / Math.max(H, 1), 0.06, 0.22);
+      }
+      const lOrigin = godRayGroup.position.clone().project(camera);
+      beamUniforms.uLightScreen.value.set(lOrigin.x * 0.5 + 0.5, lOrigin.y * 0.5 + 0.5);
+
+      // Respiración de la luz e iluminación dinámica de tarjetas y contorno del pudú
       const rayPulse = 1.0 + Math.sin(t * 1.8) * 0.08 + (audioSync.active ? audioSync.energy * 0.4 : 0);
       godRayLight.intensity = 9.5 * rayPulse;
-      godRayLight.position.x = 160 + nEx * 120;
+      godRayLight.position.x = sunSweep * halfSpanX * 0.75;
       godRayLight.position.y = 120 + nEy * 60;
 
       // Mantener la corona mirando hacia la cámara
@@ -3116,10 +3159,10 @@ const puduBrain=new PuduAI();
 
       // Posicionamiento de fantasmas de lente
       if (typeof ghostMeshA !== 'undefined' && ghostMeshA) {
-        ghostMeshA.position.set(-nEx * 140, -nEy * 80 - 60, -180);
+        ghostMeshA.position.set(-sunSweep * (W * 0.18), -nEy * 80 - 60, -240);
       }
       if (typeof ghostMeshB !== 'undefined' && ghostMeshB) {
-        ghostMeshB.position.set(-nEx * 220, -nEy * 130 - 100, -160);
+        ghostMeshB.position.set(-sunSweep * (W * 0.28), -nEy * 130 - 100, -220);
       }
     }
 
