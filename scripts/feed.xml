@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>The Power of the Pudú — Metal Progresivo Chileno &amp; Hub 3D</title>
+    <link>https://pudupower.com/</link>
+    <description>Hub oficial interactivo de The Power of the Pudú (Santiago, Chile).</description>
+    <language>es-CL</language>
+    <lastBuildDate>Fri, 27 Nov 2026 05:06:32 GMT</lastBuildDate>
+    <atom:link href="https://pudupower.com/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
+    <atom:link href="https://pubsubhubbub.superfeedr.com/" rel="hub" />
+    <item>
+      <title>The Power of the Pudú — Hub Interactivo 3D</title>
+      <link>https://pudupower.com/</link>
+      <guid isPermaLink="true">https://pudupower.com/</guid>
+      <pubDate>Fri, 27 Nov 2026 05:06:32 GMT</pubDate>
+      <description>Ecosistema web 3D gratuito en Three.js, WebGL y WebCodecs.</description>
+    </item>
+    <item>
+      <title>Pudu Poop Maker — Generador YTP Online</title>
+      <link>https://ytp.pudupower.com/</link>
+      <guid isPermaLink="true">https://ytp.pudupower.com/</guid>
+      <pubDate>Fri, 27 Nov 2026 05:06:32 GMT</pubDate>
+      <description>Generador de videos YouTube Poop en el navegador con WebCodecs.</description>
+    </item>
+    <item>
+      <title>Barsalitsuni 3D — Sintetizador Visual</title>
+      <link>https://barsalitsuni.pudupower.com/</link>
+      <guid isPermaLink="true">https://barsalitsuni.pudupower.com/</guid>
+      <pubDate>Fri, 27 Nov 2026 05:06:32 GMT</pubDate>
+      <description>Sintetizador visual 3D experimental y Seam Carving.</description>
+    </item>
+    <item>
+      <title>PuduWorld — Pudú Simulator 3D</title>
+      <link>https://simulator.pudupower.com/</link>
+      <guid isPermaLink="true">https://simulator.pudupower.com/</guid>
+      <pubDate>Fri, 27 Nov 2026 05:06:32 GMT</pubDate>
+      <description>Simulador 3D interactivo de The Power of the Pudú.</description>
+    </item>
+  </channel>
+</rss>

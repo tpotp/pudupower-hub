@@ -19,6 +19,9 @@
   <link rel="canonical" href="https://pudupower.com/" />
   <link rel="alternate" hreflang="es-CL" href="https://pudupower.com/" />
   <link rel="alternate" hreflang="es" href="https://pudupower.com/" />
+  <link rel="alternate" hreflang="en" href="https://pudupower.com/?lang=en" />
+  <link rel="alternate" hreflang="en-US" href="https://pudupower.com/?lang=en" />
+  <link rel="alternate" hreflang="pt" href="https://pudupower.com/?lang=pt" />
   <link rel="alternate" hreflang="x-default" href="https://pudupower.com/" />
 
   <!-- Preconexión y Preload LCP (Cloudflare CDN) -->
@@ -37,6 +40,7 @@
   <meta property="og:locale" content="es_CL" />
   <meta property="og:locale:alternate" content="es_ES" />
   <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="pt_BR" />
   <meta property="og:site_name" content="The Power of the Pudú" />
   <meta property="og:url" content="https://pudupower.com/" />
   <meta property="og:title" content="The Power of the Pudú — Metal Progresivo Chileno &amp; Hub 3D" />
@@ -108,6 +112,7 @@
         "@id": "https://pudupower.com/#musicgroup",
         "name": "The Power of the Pudú",
         "alternateName": ["TPOTP", "Pudú Power", "Power of the Pudu"],
+        "availableLanguage": ["es", "en", "pt"],
         "url": "https://pudupower.com/",
         "mainEntityOfPage": "https://pudupower.com/",
         "image": {
@@ -184,7 +189,8 @@
         "name": "The Power of the Pudú",
         "alternateName": "Pudú Power Hub 3D",
         "description": "Hub oficial interactivo en Three.js de The Power of the Pudú: música, generador YTP, sintetizador 3D Barsalitsuni y simulador PuduWorld.",
-        "inLanguage": ["es-CL", "es", "en-US"],
+        "inLanguage": ["es-CL", "es", "en-US", "en", "pt"],
+        "availableLanguage": ["es", "en", "pt"],
         "publisher": { "@id": "https://pudupower.com/#musicgroup" },
         "potentialAction": {
           "@type": "SearchAction",
@@ -264,7 +270,8 @@
         "operatingSystem": "Any (Web Browser)",
         "browserRequirements": "Requires JavaScript, HTML5, WebCodecs API",
         "isAccessibleForFree": true,
-        "inLanguage": ["es", "en"],
+        "inLanguage": ["es", "en", "pt"],
+        "availableLanguage": ["es", "en", "pt"],
         "screenshot": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
         "featureList": [
           "Generador automático de YouTube Poop (YTPMV)",
@@ -291,7 +298,8 @@
         "operatingSystem": "Any (Web Browser)",
         "browserRequirements": "Requires JavaScript, WebGL, WebAssembly",
         "isAccessibleForFree": true,
-        "inLanguage": ["es", "en"],
+        "inLanguage": ["es", "en", "pt"],
+        "availableLanguage": ["es", "en", "pt"],
         "screenshot": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
         "featureList": [
           "Seam Carving (Liquid Rescale) en WebAssembly",
@@ -317,7 +325,8 @@
         "operatingSystem": "Any (Web Browser)",
         "browserRequirements": "Requires JavaScript and WebGL 2.0",
         "isAccessibleForFree": true,
-        "inLanguage": ["es", "en"],
+        "inLanguage": ["es", "en", "pt"],
+        "availableLanguage": ["es", "en", "pt"],
         "screenshot": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
         "featureList": [
           "Simulador 3D multijugador del pudú en el bosque valdiviano",
@@ -1221,6 +1230,9 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
           <span>INSTAGRAM</span>
         </a>
+        <button type="button" id="pudu-lang-toggle" class="nav-item" aria-label="Switch language" style="cursor:pointer;">
+          <span>ES / en</span>
+        </button>
       </nav>
     </header>
 
@@ -1424,6 +1436,7 @@
   })();
   </script>
 
+  <script src="./i18n-auto.js?v=20261127a" defer></script>
   <script src="./physical-ui.js?v=20261126g"></script>
   <script type="module" src="./glass-ui.js?v=20261126g"></script>
 </body>
