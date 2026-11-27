@@ -8,6 +8,7 @@
  *     * Reacción táctil / click / hover / arrastre / caricias
  */
 import * as THREE from './vendor/three/three.module.js';
+import { buildUltraPuduModel } from './pudu-ultra-model.js';
 
 (() => {
   'use strict';
@@ -105,9 +106,9 @@ import * as THREE from './vendor/three/three.module.js';
 
   /* ---------- 1 Single Volumetric God Ray / Optical Flares (After Effects Pro style, alpha-safe) ---------- */
   const godRayGroup = new THREE.Group();
-  const godRayBasePos = new THREE.Vector3(160, 340, -260);
+  const godRayBasePos = new THREE.Vector3(140, 260, -90);
   godRayGroup.position.copy(godRayBasePos);
-  godRayGroup.rotation.set(0.14, 0, -0.44);
+  godRayGroup.rotation.set(0.18, 0, -0.46);
 
   const beamLength = 1550.0;
   const beamTopRadius = 38.0;
@@ -298,13 +299,13 @@ import * as THREE from './vendor/three/three.module.js';
   const ghostMeshA = new THREE.Mesh(ghostGeo, ghostMat);
   ghostMeshA.position.set(0, 0, -180);
   ghostMeshA.renderOrder = 3;
-  scene.add(ghostMeshA);
+  // scene.add(ghostMeshA);
 
   const ghostMeshB = new THREE.Mesh(ghostGeo, ghostMat.clone());
   ghostMeshB.scale.setScalar(0.55);
   ghostMeshB.position.set(0, 0, -170);
   ghostMeshB.renderOrder = 3;
-  scene.add(ghostMeshB);
+  // scene.add(ghostMeshB);
 
   // PointLight en espacio del mundo DELANTE de las tarjetas para crear reflejos reales en el vidrio
   const godRayLight = new THREE.PointLight(0xffdca3, 9.5, 2400, 1.15);
@@ -605,7 +606,7 @@ import * as THREE from './vendor/three/three.module.js';
     // 2. Crear grupo 3D contenedor del paralelepípedo
     if (!card.group) {
       card.group = new THREE.Group();
-      scene.add(card.group);
+      // scene.add(card.group);
     }
 
     // 3. Cara frontal con el diseño impreso
@@ -1535,7 +1536,25 @@ const puduBrain=new PuduAI();
     return root;
   }
 
-  pudu3dModel = buildProceduralPudu();
+      // Inicialización del Pudú Ultra Realista y Tierno (The Power of the Pudú)
+    const rig = buildUltraPuduModel({
+      activeProfile: { physMat: true },
+      isEcoHardware: false,
+      contactShadowTex: null,
+      furShellMeshes: []
+    });
+    window.ultraRig = rig;
+    pudu3dModel = rig.root;
+    pudu3dModel._baseY = -0.22;
+    puduParts.root = rig.root;
+    puduParts.body = rig.bodyGroup;
+    puduParts.head = rig.headPivot;
+    puduParts.neck = rig.neckPivot;
+    puduParts.jaw = rig.jawPivot;
+    puduParts.ears = rig.ears;
+    puduParts.eyelids = rig.eyelids;
+    puduParts.legs = rig.legs;
+    puduParts.tail = rig.tailGroup;
   puduGroup.add(pudu3dModel);
 
   /* ══════════════════════════════════════════════════════════════
@@ -1636,7 +1655,7 @@ const puduBrain=new PuduAI();
   }
 
   function updateMouth(t, dt = 0.016) {
-    if (!puduParts.mouthSmile) return;
+    if (!window.ultraRig && !puduParts.mouthSmile) return;
     const safeDt = Math.min(dt || 0.016, 0.05);
     let shape = puduBrain.mouthShape;
 
@@ -1686,6 +1705,19 @@ const puduBrain=new PuduAI();
 
     const openAmt = Math.max(0, Math.min(1.2, puduLipSync.open));
 
+        // 3. Movimiento anatómico 3D de la mandíbula inferior real
+    if (window.ultraRig && window.ultraRig.jawPivot) {
+      window.ultraRig.jawPivot.rotation.x = openAmt * 0.35;
+    }
+    if (window.ultraRig && window.ultraRig.headPivot) {
+      window.ultraRig.headPivot.rotation.x = puduLipSync.headBob + Math.sin(t * 1.8) * 0.03;
+    }
+    if (window.ultraRig && window.ultraRig.ears && window.ultraRig.ears.length >= 2) {
+      window.ultraRig.ears[0].rotation.z = -0.52 + (openAmt * 0.12) + Math.sin(t * 2.4) * 0.04;
+      window.ultraRig.ears[1].rotation.z = 0.52 - (openAmt * 0.12) - Math.sin(t * 2.4 + 0.5) * 0.04;
+    }
+
+    if (!puduParts.mouthSmile) return;
     // 3. Opacidades cruzadas según apertura real y emoción
     const targets = { smile: 0, open: 0, angry: 0, happy: 0 };
     if (isTalking || shape === 'yawn' || shape === 'open') {
@@ -2767,7 +2799,7 @@ const puduBrain=new PuduAI();
     if (!puduGroup || !pudu3dModel) return;
 
     const isMobile = W < 900;
-    puduScale = isMobile ? 135 : 160;
+    puduScale = isMobile ? 220 : 260;
     const puduBaseY = isMobile ? H * 0.165 : H * 0.145;
 
     // AI think & updates
@@ -2780,6 +2812,27 @@ const puduBrain=new PuduAI();
     updateEars(t);
     updateCheeks();
     updateBreathing(t);
+    // Animación orgánica de locomoción y patitas del Pudú Ultra
+    if (window.ultraRig && window.ultraRig.legs) {
+      const isMoving = Math.abs(puduPhysVx) > 0.015 || puduBrain.state === 'patrol';
+      const trotFreq = isMoving ? 10.5 : 2.2;
+      const trotAmp = isMoving ? 0.38 : 0.035;
+      window.ultraRig.legs.forEach((leg, i) => {
+        const phase = (i === 0 || i === 3) ? 0 : Math.PI;
+        leg.rotation.x = Math.sin(t * trotFreq + phase) * trotAmp;
+      });
+    }
+    if (window.ultraRig && window.ultraRig.tailGroup) {
+      window.ultraRig.tailGroup.rotation.y = Math.sin(t * 7.5) * 0.22;
+    }
+    if (window.ultraRig && window.ultraRig.bodyGroup) {
+      const breath = Math.sin(t * 2.8) * 0.014;
+      window.ultraRig.bodyGroup.scale.set(1 + breath * 0.5, 1 + breath, 1 + breath * 0.7);
+    }
+    if (window.ultraRig && window.ultraRig.eyelids) {
+      const blinkAmt = puduBrain.isBlinking ? 1.0 : 0.0;
+      window.ultraRig.eyelids.forEach(el => { el.scale.y = 1.0 - blinkAmt * 0.85; });
+    }
 
     maybeSpawnEmotions(dt);
     updateEmotionParticles();
@@ -3067,12 +3120,18 @@ const puduBrain=new PuduAI();
 
     syncCameraProjection(W, H, ex, ey);
 
-    // Movimiento natural y armónico del fondo con acelerómetro/giroscopio y mouse
+    // Movimiento natural, cinematográfico y reactivo al giroscopio/acelerómetro del celular y mouse
     const bgStageEl = doc.querySelector('.bg-stage');
     if (bgStageEl) {
-      const bgShiftX = (-ex * 0.16).toFixed(2);
-      const bgShiftY = (-ey * 0.12).toFixed(2);
-      bgStageEl.style.transform = `translate3d(${bgShiftX}px, ${bgShiftY}px, 0)`;
+      if (window.PhysicalUI && typeof window.PhysicalUI.updateBackground === 'function') {
+        window.PhysicalUI.updateBackground(bgStageEl, 1.0);
+      } else {
+        const bgShiftX = (-ex * 0.22).toFixed(2);
+        const bgShiftY = (-ey * 0.16).toFixed(2);
+        const rotX = (ey * 0.018).toFixed(3);
+        const rotY = (-ex * 0.022).toFixed(3);
+        bgStageEl.style.transform = `perspective(1200px) translate3d(${bgShiftX}px, ${bgShiftY}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) scale(1.07)`;
+      }
     }
 
     eyeLight.position.set(ex * 1.2, ey * 1.2, EYE_D * 0.6);
