@@ -3369,10 +3369,10 @@ const puduBrain=new PuduAI();
       const track    = doc.getElementById('carouselTrack');
       if (!viewport || !track) return;
 
-      const AUTO_SPEED = 28; // px/sec
+      const AUTO_SPEED = 25; // px/sec
       const FRICTION   = 0.93; // per-frame decay when releasing
       let offset    = 0;
-      let velocity  = AUTO_SPEED;
+      let velocity  = 0; // starts at 0, accelerates to AUTO_SPEED
       let dragging  = false;
       let dragX     = 0;
       let dragT     = 0;
