@@ -8,6 +8,7 @@
  *     * Reacción táctil / click / hover / arrastre / caricias
  */
 import * as THREE from './vendor/three/three.module.js';
+import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
 
 (() => {
   'use strict';
@@ -60,26 +61,13 @@ import * as THREE from './vendor/three/three.module.js';
   let viewportW = 0;
   let viewportH = 0;
 
-  /* ---------- Iluminación y EnvMap PBR (Idéntico a Barsalitsuni) ---------- */
+  /* ---------- Iluminación y EnvMap PBR — RoomEnvironment (idéntico a Barsalitsuni) ---------- */
   try {
     const pmrem = new THREE.PMREMGenerator(renderer);
     pmrem.compileEquirectangularShader();
-    const envCanvas = doc.createElement('canvas');
-    envCanvas.width = 128;
-    envCanvas.height = 64;
-    const ectx = envCanvas.getContext('2d');
-    const egrad = ectx.createLinearGradient(0, 0, 0, 64);
-    egrad.addColorStop(0, '#557766');
-    egrad.addColorStop(0.35, '#223328');
-    egrad.addColorStop(0.5, '#111814');
-    egrad.addColorStop(0.7, '#1a1012');
-    egrad.addColorStop(1, '#050706');
-    ectx.fillStyle = egrad;
-    ectx.fillRect(0, 0, 128, 64);
-    const envTex = new THREE.CanvasTexture(envCanvas);
-    envTex.mapping = THREE.EquirectangularReflectionMapping;
-    const envRT = pmrem.fromEquirectangular(envTex);
-    scene.environment = envRT.texture;
+    const room = new RoomEnvironment();
+    scene.environment = pmrem.fromScene(room, 0.04).texture;
+    room.dispose();
     pmrem.dispose();
   } catch (e) {
     console.warn('[glass-ui] PMREM fallback to lights:', e);
@@ -713,6 +701,7 @@ import * as THREE from './vendor/three/three.module.js';
       attenuationDistance: 28,
       transparent: true,
       opacity: 0.78,
+      reflectivity: 0.95,
       clearcoat: 1.0,
       clearcoatRoughness: 0.03
     });
