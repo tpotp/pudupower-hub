@@ -852,14 +852,24 @@
 
     .mode-icon {
       font-size: 2.4rem;
-      width: 58px;
-      height: 58px;
+      width: 84px;
+      height: 84px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      border-radius: 16px;
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 20px;
+      overflow: hidden;
+      padding: 0;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+    }
+
+    .mode-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     .mode-text {
@@ -1242,7 +1252,7 @@
     <!-- Botones físicos 3D (The Power of the Pudú: Latin Progressive Metal Apps) -->
     <section class="cards-dock" aria-label="Aplicaciones oficiales">
       <a class="mode-card mode-poop" id="btn-poop" href="https://ytp.pudupower.com" target="_blank" rel="noopener noreferrer" aria-label="Pudu Poop Maker">
-        <span class="mode-icon" aria-hidden="true">💩</span>
+        <span class="mode-icon" aria-hidden="true"><img src="assets/poop_maker_logo.jpg" alt="Pudu Poop Maker" loading="eager" /></span>
         <span class="mode-text">
           <strong>Pudu Poop Maker</strong>
           <span>Caos sonoro y YTP en estado puro: blast beats, cortes esquizofrénicos y metal progresivo sin frenos.</span>
@@ -1255,7 +1265,7 @@
       </a>
 
       <a class="mode-card mode-barsa" id="btn-barsa" href="https://barsalitsuni.pudupower.com" target="_blank" rel="noopener noreferrer" aria-label="Barsalitsuni Generator">
-        <span class="mode-icon" aria-hidden="true">🌌</span>
+        <span class="mode-icon" aria-hidden="true"><img src="assets/barsalitsuni_thumb_circle.jpg" alt="Barsalitsuni 3D" loading="eager" /></span>
         <span class="mode-text">
           <strong>Barsalitsuni</strong>
           <span>Sintetizador visual 3D con seam carving y estética avant-garde chilena para distorsionar la realidad.</span>
@@ -1268,7 +1278,7 @@
       </a>
 
       <a class="mode-card mode-sim" id="btn-sim" href="https://simulator.pudupower.com" target="_blank" rel="noopener noreferrer" aria-label="PuduWorld">
-        <span class="mode-icon" aria-hidden="true">🦌</span>
+        <span class="mode-icon" aria-hidden="true"><img src="assets/puduworld_logo.jpg" alt="PuduWorld" loading="eager" /></span>
         <span class="mode-text">
           <strong>PuduWorld</strong>
           <span>Simulador 3D multijugador impulsado por IA generativa para una metamorfosis colectiva en tiempo real.</span>
