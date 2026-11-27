@@ -769,7 +769,12 @@ import * as THREE from './vendor/three/three.module.js';
   window.addEventListener('pointerdown', unlockAudio, { once: true, passive: true });
   window.addEventListener('touchstart', unlockAudio, { once: true, passive: true });
 
+  function isPageInFocus() {
+    return !doc.hidden && doc.visibilityState === 'visible' && (typeof doc.hasFocus !== 'function' || doc.hasFocus());
+  }
+
   function playPuduMeow(pitch = 1.0, style = 'normal') {
+    if (!isPageInFocus()) return;
     try {
       const ac = getACtx();
       if (!ac) return;
@@ -2576,6 +2581,7 @@ const puduBrain=new PuduAI();
   }
 
   function playPuduChirp(ctx, when, duration = 0.14) {
+    if (!isPageInFocus()) return;
     try {
       const osc = ctx.createOscillator();
       const sub = ctx.createOscillator();
@@ -2613,6 +2619,7 @@ const puduBrain=new PuduAI();
   }
 
   function playPuduAnimalese(text, timeline) {
+    if (!isPageInFocus()) return;
     const ctx = getPuduAudioCtx();
     if (!ctx) return;
 
@@ -2674,7 +2681,11 @@ const puduBrain=new PuduAI();
     });
   }
 
+  let mouthEndTimer = 0;
+
   function stopMouthAnim() {
+    clearTimeout(mouthEndTimer);
+    mouthEndTimer = 0;
     puduSpeakingActive = false;
     puduLipSync.active = false;
     puduVoiceNodes.forEach((n) => {
@@ -2683,13 +2694,29 @@ const puduBrain=new PuduAI();
     puduVoiceNodes = [];
   }
 
+  function stopAllPuduSpeech() {
+    clearTimeout(speechTimer);
+    speechTimer = 0;
+    stopMouthAnim();
+    if (bubbleEl) bubbleEl.classList.remove('active');
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.cancel(); } catch (_) {}
+    }
+    if (puduAudioCtx && puduAudioCtx.state === 'running') {
+      puduAudioCtx.suspend().catch(() => {});
+    }
+    if (audioCtx && audioCtx.state === 'running') {
+      audioCtx.suspend().catch(() => {});
+    }
+  }
+
   /**
    * Voz dulce del Pudú
    * @param {string} text
    * @param {'hybrid'|'pudu'|'tts'} mode - 'hybrid' = trino mágico + TTS dulce; 'pudu' = 100% Web Audio formantes
    */
   function speakPuduVoice(text, mode = 'hybrid') {
-    if (!text) return;
+    if (!text || !isPageInFocus()) return;
     stopMouthAnim();
 
     const clean = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[#*_~`]/g, '').trim();
@@ -2717,7 +2744,7 @@ const puduBrain=new PuduAI();
     const canTTS = ('speechSynthesis' in window) && mode !== 'pudu';
     if (!canTTS) {
       playPuduAnimalese(clean, timeline);
-      setTimeout(stopMouthAnim, totalDuration * 1000 + 150);
+      mouthEndTimer = setTimeout(stopMouthAnim, totalDuration * 1000 + 150);
       return;
     }
 
@@ -2743,15 +2770,27 @@ const puduBrain=new PuduAI();
       };
 
       u.onstart = () => {
+        if (!isPageInFocus()) {
+          stopAllPuduSpeech();
+          return;
+        }
         puduLipSync.startTime = performance.now() * 0.001;
       };
       u.onend = stopMouthAnim;
-      u.onerror = () => {
+      u.onerror = (ev) => {
+        if (!isPageInFocus() || (ev && (ev.error === 'canceled' || ev.error === 'interrupted'))) {
+          stopMouthAnim();
+          return;
+        }
         // Fallback inmediato a voz procedural si el TTS falla en móvil
         playPuduAnimalese(clean, timeline);
-        setTimeout(stopMouthAnim, totalDuration * 1000);
+        mouthEndTimer = setTimeout(stopMouthAnim, totalDuration * 1000);
       };
 
+      if (!isPageInFocus()) {
+        stopAllPuduSpeech();
+        return;
+      }
       window.speechSynthesis.speak(u);
     } catch (_) {
       playPuduAnimalese(clean, timeline);
