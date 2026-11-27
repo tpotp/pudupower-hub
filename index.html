@@ -56,6 +56,32 @@
   <meta name="twitter:image" content="https://cdn.pudupower.com/art/pudu-portada-desktop.webp" />
   <meta name="twitter:image:alt" content="Portada oficial de The Power of the Pudú" />
 
+  <!-- oEmbed Discovery -->
+  <link
+    rel="alternate"
+    type="application/json+oembed"
+    href="https://pudupower.com/api/oembed?url=https%3A%2F%2Fpudupower.com%2F&format=json"
+    title="The Power of the Pudú — Interactive 3D Hub"
+  />
+  <link
+    rel="alternate"
+    type="text/xml+oembed"
+    href="https://pudupower.com/api/oembed?url=https%3A%2F%2Fpudupower.com%2F&format=xml"
+    title="The Power of the Pudú — Interactive 3D Hub"
+  />
+
+  <!-- Extra Social Media & Video Meta -->
+  <meta property="og:video" content="https://cdn.pudupower.com/video/pudu-hub-preview.mp4" />
+  <meta property="og:video:secure_url" content="https://cdn.pudupower.com/video/pudu-hub-preview.mp4" />
+  <meta property="og:video:type" content="video/mp4" />
+  <meta property="og:video:width" content="1280" />
+  <meta property="og:video:height" content="720" />
+  <meta name="twitter:site" content="@thepowerofthepudu" />
+  <meta name="twitter:creator" content="@thepowerofthepudu" />
+  <meta name="twitter:player" content="https://pudupower.com/embed/player.html" />
+  <meta name="twitter:player:width" content="1280" />
+  <meta name="twitter:player:height" content="720" />
+
   <!-- Apariencia, PWA e Iconos -->
   <meta name="theme-color" content="#070b09" />
   <meta name="color-scheme" content="dark" />
@@ -73,22 +99,67 @@
         "@type": "MusicGroup",
         "@id": "https://pudupower.com/#musicgroup",
         "name": "The Power of the Pudú",
-        "alternateName": ["TPOTP", "Pudú Power"],
-        "url": "https://pudupower.com",
-        "image": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
-        "description": "Banda chilena de metal progresivo y experimental que combina música pesada con experiencias web interactivas en 3D, sintetizadores visuales y simuladores.",
+        "alternateName": ["TPOTP", "Pudú Power", "Power of the Pudu"],
+        "url": "https://pudupower.com/",
+        "mainEntityOfPage": "https://pudupower.com/",
+        "image": {
+          "@type": "ImageObject",
+          "url": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+          "width": 1200,
+          "height": 630
+        },
+        "logo": "https://pudupower.com/assets/logo_the_power_of_the_pudu_blanco.png",
+        "description": "Banda chilena de metal progresivo, latin metal y música experimental de Santiago de Chile. Creadores de un ecosistema web 3D gratuito en Three.js, WebGL y WebCodecs.",
         "genre": [
           "Progressive Metal",
+          "Latin Metal",
           "Experimental Metal",
-          "Metal Progresivo Chileno",
-          "Avant-Garde Metal"
+          "Avant-Garde Metal",
+          "Metal Progresivo Chileno"
         ],
         "foundingLocation": {
           "@type": "Place",
-          "name": "Chile",
+          "name": "Santiago, Chile",
           "address": {
             "@type": "PostalAddress",
+            "addressLocality": "Santiago",
             "addressCountry": "CL"
+          }
+        },
+        "knowsAbout": [
+          "Progressive Metal",
+          "Three.js",
+          "WebGL",
+          "WebCodecs",
+          "YouTube Poop",
+          "Seam Carving"
+        ],
+        "potentialAction": {
+          "@type": "ListenAction",
+          "target": [
+            {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://open.spotify.com/artist/4BtrXf9c3jdgSQE16RpkF1",
+              "actionPlatform": [
+                "http://schema.org/DesktopWebPlatform",
+                "http://schema.org/IOSPlatform",
+                "http://schema.org/AndroidPlatform"
+              ]
+            },
+            {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://www.youtube.com/@thepowerofthepudu"
+            },
+            {
+              "@type": "EntryPoint",
+              "urlTemplate": "https://thepowerofthepudu.bandcamp.com"
+            }
+          ],
+          "expectsAcceptanceOf": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD",
+            "category": "free"
           }
         },
         "sameAs": [
@@ -103,11 +174,10 @@
         "@id": "https://pudupower.com/#website",
         "url": "https://pudupower.com/",
         "name": "The Power of the Pudú",
-        "description": "Hub oficial interactivo en 3D de The Power of the Pudú.",
-        "inLanguage": "es-CL",
-        "publisher": {
-          "@id": "https://pudupower.com/#musicgroup"
-        },
+        "alternateName": "Pudú Power Hub 3D",
+        "description": "Hub oficial interactivo en Three.js de The Power of the Pudú: música, generador YTP, sintetizador 3D Barsalitsuni y simulador PuduWorld.",
+        "inLanguage": ["es-CL", "es", "en-US"],
+        "publisher": { "@id": "https://pudupower.com/#musicgroup" },
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
@@ -118,27 +188,22 @@
         }
       },
       {
-        "@type": "WebPage",
+        "@type": "CollectionPage",
         "@id": "https://pudupower.com/#webpage",
         "url": "https://pudupower.com/",
-        "name": "The Power of the Pudú | Metal Progresivo Chileno & Hub 3D",
-        "description": "Hub oficial de The Power of the Pudú. Accede a nuestra música, visualizador 3D, Pudu Poop Maker, Barsalitsuni Generator y Pudú Simulator.",
+        "name": "The Power of the Pudú | Metal Progresivo Chileno, YTP Maker & Hub 3D",
+        "description": "Hub 3D interactivo de The Power of the Pudú con Three.js, Pudu Poop Maker (YTP), Barsalitsuni 3D y PuduWorld Simulator.",
         "inLanguage": "es-CL",
-        "isPartOf": {
-          "@id": "https://pudupower.com/#website"
-        },
-        "about": {
-          "@id": "https://pudupower.com/#musicgroup"
-        },
+        "isPartOf": { "@id": "https://pudupower.com/#website" },
+        "about": { "@id": "https://pudupower.com/#musicgroup" },
+        "mainEntity": { "@id": "https://pudupower.com/#applist" },
         "primaryImageOfPage": {
           "@type": "ImageObject",
           "url": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
           "width": 1200,
           "height": 630
         },
-        "breadcrumb": {
-          "@id": "https://pudupower.com/#breadcrumb"
-        }
+        "breadcrumb": { "@id": "https://pudupower.com/#breadcrumb" }
       },
       {
         "@type": "BreadcrumbList",
@@ -147,63 +212,117 @@
           {
             "@type": "ListItem",
             "position": 1,
-            "name": "Inicio",
+            "name": "Pudú Power Hub 3D",
             "item": "https://pudupower.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Pudu Poop Maker (YTP)",
+            "item": "https://ytp.pudupower.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Barsalitsuni 3D Synth",
+            "item": "https://barsalitsuni.pudupower.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "name": "PuduWorld Simulator",
+            "item": "https://simulator.pudupower.com/"
           }
         ]
       },
       {
-        "@type": "SoftwareApplication",
+        "@type": "ItemList",
+        "@id": "https://pudupower.com/#applist",
+        "name": "Ecosistema Web 3D de The Power of the Pudú",
+        "numberOfItems": 3,
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "item": { "@id": "https://ytp.pudupower.com/#app" } },
+          { "@type": "ListItem", "position": 2, "item": { "@id": "https://barsalitsuni.pudupower.com/#app" } },
+          { "@type": "ListItem", "position": 3, "item": { "@id": "https://simulator.pudupower.com/#app" } }
+        ]
+      },
+      {
+        "@type": ["SoftwareApplication", "WebApplication"],
         "@id": "https://ytp.pudupower.com/#app",
-        "name": "Pudu Poop Maker",
-        "url": "https://ytp.pudupower.com",
+        "name": "Pudu Poop Maker (Puduloco YTP Generator)",
+        "url": "https://ytp.pudupower.com/",
         "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "browserRequirements": "Requires JavaScript. Modern HTML5 browser.",
-        "description": "Generador audiovisual interactivo y máquina de caos YTP oficial de The Power of the Pudú.",
-        "author": {
-          "@id": "https://pudupower.com/#musicgroup"
-        },
+        "applicationSubCategory": "Video Editor & YTP Generator",
+        "operatingSystem": "Any (Web Browser)",
+        "browserRequirements": "Requires JavaScript, HTML5, WebCodecs API",
+        "isAccessibleForFree": true,
+        "inLanguage": ["es", "en"],
+        "screenshot": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+        "featureList": [
+          "Generador automático de YouTube Poop (YTPMV)",
+          "Procesamiento local con WebCodecs sin subir archivos",
+          "Detección facial local en tiempo real",
+          "Efectos de blast beats y cortes rítmicos"
+        ],
+        "description": "Generador y editor de YouTube Poop (YTP) y YTPMV en tiempo real que corre 100% en el navegador con WebCodecs.",
+        "author": { "@id": "https://pudupower.com/#musicgroup" },
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "USD"
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
         }
       },
       {
-        "@type": "SoftwareApplication",
+        "@type": ["SoftwareApplication", "WebApplication"],
         "@id": "https://barsalitsuni.pudupower.com/#app",
-        "name": "Barsalitsuni Generator",
-        "url": "https://barsalitsuni.pudupower.com",
+        "name": "Barsalitsuni 3D Video & Seam Carving Synth",
+        "url": "https://barsalitsuni.pudupower.com/",
         "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "Web Browser",
-        "browserRequirements": "Requires JavaScript. Modern HTML5 browser.",
-        "description": "Generador audiovisual experimental y sintetizador visual 3D con seam carving creado por The Power of the Pudú.",
-        "author": {
-          "@id": "https://pudupower.com/#musicgroup"
-        },
+        "applicationSubCategory": "3D Visual Synthesizer & Video Editor",
+        "operatingSystem": "Any (Web Browser)",
+        "browserRequirements": "Requires JavaScript, WebGL, WebAssembly",
+        "isAccessibleForFree": true,
+        "inLanguage": ["es", "en"],
+        "screenshot": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+        "featureList": [
+          "Seam Carving (Liquid Rescale) en WebAssembly",
+          "Sintetizador visual 3D en WebGL",
+          "Distorsión audiovisual reactiva al metal progresivo"
+        ],
+        "description": "Editor de video experimental y sintetizador visual 3D con seam carving en WebAssembly y WebGL.",
+        "author": { "@id": "https://pudupower.com/#musicgroup" },
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "USD"
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
         }
       },
       {
-        "@type": "SoftwareApplication",
+        "@type": ["SoftwareApplication", "WebApplication"],
         "@id": "https://simulator.pudupower.com/#app",
-        "name": "PuduWorld · Pudú Simulator × PuduChat",
-        "url": "https://simulator.pudupower.com",
+        "name": "PuduWorld · Pudú Simulator 3D × PuduChat",
+        "url": "https://simulator.pudupower.com/",
         "applicationCategory": "GameApplication",
-        "operatingSystem": "Web Browser",
-        "browserRequirements": "Requires JavaScript and WebGL.",
-        "description": "Simulador interactivo en 3D protagonizado por un pudú dentro del universo experimental de The Power of the Pudú.",
-        "author": {
-          "@id": "https://pudupower.com/#musicgroup"
-        },
+        "applicationSubCategory": "3D Multiplayer Browser Simulator",
+        "operatingSystem": "Any (Web Browser)",
+        "browserRequirements": "Requires JavaScript and WebGL 2.0",
+        "isAccessibleForFree": true,
+        "inLanguage": ["es", "en"],
+        "screenshot": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
+        "featureList": [
+          "Simulador 3D multijugador del pudú en el bosque valdiviano",
+          "IA generativa conversacional en tiempo real",
+          "Física orgánica en navegador sin descargas"
+        ],
+        "description": "Simulador 3D multijugador en navegador protagonizado por un pudú chileno con IA generativa y chat en tiempo real.",
+        "author": { "@id": "https://pudupower.com/#musicgroup" },
         "offers": {
           "@type": "Offer",
           "price": "0",
-          "priceCurrency": "USD"
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock"
         }
       },
       {
@@ -215,7 +334,7 @@
             "name": "¿Qué es The Power of the Pudú?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The Power of the Pudú es una banda chilena de metal progresivo y latin metal experimental de Santiago de Chile, que combina música técnica con experiencias web 3D, generadores de video y simuladores gratuitos."
+              "text": "The Power of the Pudú es una banda chilena de metal progresivo y latin metal experimental de Santiago de Chile, que combina música técnica con experiencias web 3D en Three.js, generadores de video YTP y simuladores gratuitos."
             }
           },
           {
@@ -894,6 +1013,134 @@
       margin: 0.6rem 0 0;
       font-size: 0.88rem;
     }
+
+    /* SEO & Accessibility */
+    .sr-only-seo {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Viral Dock & Share */
+    .viral-dock {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin: 0.9rem auto 0.4rem;
+      position: relative;
+      z-index: 26;
+      width: 100%;
+      max-width: 900px;
+      padding: 0 1rem;
+    }
+
+    .viral-btn {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(10, 20, 14, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #f4f7f5;
+      font-family: var(--font-tech, 'Orbitron', monospace);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      backdrop-filter: blur(12px);
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+    }
+
+    .viral-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--neon-green, #00ffaa);
+      box-shadow: 0 6px 20px rgba(0, 255, 170, 0.25);
+    }
+
+    .viral-btn-primary {
+      background: rgba(0, 255, 170, 0.14);
+      border-color: rgba(0, 255, 170, 0.5);
+      color: #00ffaa;
+    }
+
+    .viral-btn-gold {
+      background: rgba(255, 183, 3, 0.12);
+      border-color: rgba(255, 183, 3, 0.45);
+      color: #ffb703;
+    }
+
+    .viral-toast {
+      font-size: 0.75rem;
+      color: #00ffaa;
+      font-weight: 700;
+      min-height: 1.2em;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Pudu Embed Modal */
+    .pudu-modal {
+      margin: auto;
+      border: 1px solid rgba(0, 255, 170, 0.45);
+      border-radius: 20px;
+      background: #070d0a;
+      color: #f4f7f5;
+      max-width: 520px;
+      width: 92vw;
+      padding: 0;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+    }
+
+    .pudu-modal::backdrop {
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+    }
+
+    .pudu-modal-box {
+      padding: 1.5rem;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .pudu-modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: #aaa;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .pudu-modal-close:hover {
+      color: #fff;
+    }
+
+    .pudu-modal-box textarea {
+      width: 100%;
+      background: #0d1712;
+      color: #00ffaa;
+      border: 1px solid rgba(0, 255, 170, 0.3);
+      border-radius: 10px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 0.78rem;
+      resize: none;
+      outline: none;
+    }
   </style>
 </head>
 <body>
@@ -930,6 +1177,9 @@
   <!-- HUD Principal -->
   <main class="hud">
     <header class="hud-header">
+      <h1 class="sr-only-seo">
+        The Power of the Pudú — Metal Progresivo Chileno, Pudu Poop Maker (YTP), Barsalitsuni 3D &amp; PuduWorld
+      </h1>
       <div class="brand">
         <a href="/" class="brand-logo-link" aria-label="The Power of the Pudú - Official Website">
           <img
@@ -1011,6 +1261,33 @@
       </a>
     </section>
 
+    <!-- Viral Share Dock & Embed Modal -->
+    <div class="viral-dock" role="region" aria-label="Compartir y Embed">
+      <button type="button" id="btn-native-share" class="viral-btn viral-btn-primary">
+        <span>⚡ COMPARTIR HUB 3D</span>
+      </button>
+      <button type="button" id="btn-copy-utm" class="viral-btn">
+        <span>🔗 COPIAR LINK VIRAL</span>
+      </button>
+      <button type="button" id="btn-open-embed" class="viral-btn viral-btn-gold">
+        <span>🦌 INSERTAR PUDÚ 3D EN TU WEB</span>
+      </button>
+      <span id="viral-toast" class="viral-toast" aria-live="polite"></span>
+    </div>
+
+    <!-- Modal Embeddable Widget Generator -->
+    <dialog id="embed-modal" class="pudu-modal" aria-labelledby="embed-modal-title">
+      <div class="pudu-modal-box">
+        <button type="button" id="btn-close-embed" class="pudu-modal-close" aria-label="Cerrar">✕</button>
+        <h3 id="embed-modal-title">🦌 Inserta el Pudú 3D Widget en tu Web o Blog</h3>
+        <p style="font-size: 0.85rem; color: #ccc;">Copia y pega este script antes de <code>&lt;/body&gt;</code> en tu sitio, Neocities, Carrd, WordPress o portafolio para tener un Pudú 3D flotante:</p>
+        <textarea id="embed-code-output" readonly rows="3">&lt;script src="https://pudupower.com/widget/pudu-badge.js" data-theme="neon" data-pos="bottom-right" defer&gt;&lt;/script&gt;</textarea>
+        <div class="pudu-modal-actions" style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" id="btn-copy-embed" class="viral-btn viral-btn-primary">📋 COPIAR CÓDIGO EMBED</button>
+        </div>
+      </div>
+    </dialog>
+
     <footer class="pro-footer">
       <div class="footer-meta">
         <span class="footer-copy">© 2026 THE POWER OF THE PUDÚ · SANTIAGO, CHILE · ALL RIGHTS RESERVED</span>
@@ -1075,6 +1352,69 @@
       </details>
     </div>
   </section>
+
+  <script>
+  (() => {
+    const toastEl = document.getElementById('viral-toast');
+    const showToast = (msg) => {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      clearTimeout(window.__puduToastT);
+      window.__puduToastT = setTimeout(() => { toastEl.textContent = ''; }, 3200);
+    };
+
+    function buildViralUrl(medium, campaign = 'pudu_viral_loop') {
+      const url = new URL('https://pudupower.com/');
+      url.searchParams.set('utm_source', navigator.share ? 'web_share' : 'copy_link');
+      url.searchParams.set('utm_medium', medium);
+      url.searchParams.set('utm_campaign', campaign);
+      return url.toString();
+    }
+
+    document.getElementById('btn-native-share')?.addEventListener('click', async () => {
+      const shareUrl = buildViralUrl('native_share_api');
+      const shareData = {
+        title: 'The Power of the Pudú — Hub 3D, YTP Maker & Metal Chileno',
+        text: '🦌⚡ Mira este hub 3D en Three.js con generador de YTP, sintetizador Barsalitsuni y simulador de Pudú chileno:',
+        url: shareUrl
+      };
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          showToast('¡Compartido! ¡Ichipi! 🌱');
+        } catch (err) {
+          if (err.name !== 'AbortError') {
+            await navigator.clipboard?.writeText(shareUrl);
+            showToast('Link viral copiado al portapapeles ⚡');
+          }
+        }
+      } else {
+        await navigator.clipboard?.writeText(shareUrl);
+        showToast('Link viral con UTM copiado ⚡');
+      }
+    });
+
+    document.getElementById('btn-copy-utm')?.addEventListener('click', async () => {
+      const shareUrl = buildViralUrl('manual_copy');
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        showToast('¡Link copiado! Compártelo en Discord, X o WhatsApp 🚀');
+      } catch {
+        prompt('Copia tu link viral:', shareUrl);
+      }
+    });
+
+    const modal = document.getElementById('embed-modal');
+    document.getElementById('btn-open-embed')?.addEventListener('click', () => modal?.showModal());
+    document.getElementById('btn-close-embed')?.addEventListener('click', () => modal?.close());
+    document.getElementById('btn-copy-embed')?.addEventListener('click', async () => {
+      const code = document.getElementById('embed-code-output')?.value || '';
+      await navigator.clipboard?.writeText(code);
+      showToast('Código Embed copiado 🦌');
+      modal?.close();
+    });
+  })();
+  </script>
 
   <script src="./physical-ui.js?v=20261126g"></script>
   <script type="module" src="./glass-ui.js?v=20261126g"></script>
