@@ -6,10 +6,10 @@
     { "source": "/ytp", "destination": "https://ytp.pudupower.com", "permanent": true },
     { "source": "/ytp/:path*", "destination": "https://ytp.pudupower.com/:path*", "permanent": true },
     { "source": "/poop", "destination": "https://ytp.pudupower.com", "permanent": true },
-    { "source": "/barsalitsuni", "destination": "https://barsalitsuni.vercel.app", "permanent": true },
+    { "source": "/barsalitsuni", "destination": "https://barsalitsuni.pudupower.com", "permanent": true },
     { "source": "/altiplanet", "destination": "https://altiplanet.pudupower.com", "permanent": true },
     { "source": "/chat", "destination": "https://chat.pudupower.com", "permanent": true },
-    { "source": "/simulator", "destination": "https://pudusimulatorprueba.vercel.app", "permanent": true }
+    { "source": "/simulator", "destination": "https://simulator.pudupower.com", "permanent": true }
   ],
   "headers": [
     {
