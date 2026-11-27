@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "type": "rich",
+  "provider_name": "Pudú Power Ecosystem",
+  "provider_url": "https://pudupower.com",
+  "title": "Pudú Power Ecosystem — Interactive Pudú Mutation",
+  "author_name": "Pudú Power Ecosystem",
+  "author_url": "https://pudupower.com",
+  "cache_age": 86400,
+  "width": 640,
+  "height": 360,
+  "thumbnail_url": "https://pudupower.com/og-preview.png",
+  "thumbnail_width": 1200,
+  "thumbnail_height": 630,
+  "html": "<iframe src=\"https://pudupower.com/embed.html?source=oembed\" width=\"640\" height=\"360\" frameborder=\"0\" allow=\"autoplay; clipboard-write; web-share\" allowfullscreen loading=\"lazy\" title=\"Pudú Power Ecosystem\"></iframe>"
+}

@@ -1,56 +1,63 @@
 {
-  "name": "The Power of the Pudú — Metal Progresivo Chileno",
+  "name": "Pudú Power Ecosystem",
   "short_name": "Pudú Power",
-  "description": "Hub oficial interactivo en 3D de The Power of the Pudú. Música, visualizadores audiovisuales, generadores y Pudú Simulator.",
+  "description": "Ecosistema interactivo, arte generativo, audio y cultura digital del Pudú (Pudu puda).",
   "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "orientation": "any",
-  "background_color": "#070b09",
-  "theme_color": "#070b09",
-  "lang": "es-CL",
-  "dir": "ltr",
-  "categories": ["music", "entertainment", "games"],
+  "orientation": "portrait-primary",
+  "theme_color": "#10b981",
+  "background_color": "#090d16",
+  "categories": [
+    "entertainment",
+    "multimedia",
+    "social"
+  ],
   "icons": [
     {
-      "src": "./favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any"
-    },
-    {
-      "src": "https://cdn.pudupower.com/icons/icon-192x192.png",
+      "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any"
+      "purpose": "any maskable"
     },
     {
-      "src": "https://cdn.pudupower.com/icons/icon-512x512.png",
+      "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "https://cdn.pudupower.com/icons/icon-maskable-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
-  "screenshots": [
+  "share_target": {
+    "action": "/share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "media",
+          "accept": [
+            "image/*",
+            "audio/*"
+          ]
+        }
+      ]
+    }
+  },
+  "shortcuts": [
     {
-      "src": "https://cdn.pudupower.com/art/pudu-portada-desktop.webp",
-      "sizes": "1200x630",
-      "type": "image/webp",
-      "form_factor": "wide",
-      "label": "Hub 3D interactivo de The Power of the Pudú en escritorio"
+      "name": "Mutación Aleatoria",
+      "short_name": "Mutar",
+      "description": "Abre Barsalitsuni con una semilla aleatoria inmediata",
+      "url": "/?seed=random&meme=chaos&source=shortcut"
     },
     {
-      "src": "https://cdn.pudupower.com/art/pudu-portada-mobile.webp",
-      "sizes": "720x1280",
-      "type": "image/webp",
-      "form_factor": "narrow",
-      "label": "Hub 3D interactivo de The Power of the Pudú en móvil"
+      "name": "Modo Meme Pudú",
+      "short_name": "Memes",
+      "description": "Generador rápido de memes Pudú Power",
+      "url": "/?meme=pudu-classic&source=shortcut"
     }
   ]
 }

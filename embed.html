@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pudú Power Ecosystem — Interactive Embed</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at top, #132238, #090d16);
+      color: #f8fafc;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .badge {
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #10b981;
+      border: 1px solid #10b98155;
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      margin-bottom: 0.75rem;
+    }
+    h1 { font-size: 1.35rem; margin-bottom: 0.5rem; }
+    .meta { font-family: monospace; font-size: 0.85rem; color: #94a3b8; margin-bottom: 1.25rem; }
+    .cta {
+      display: inline-block;
+      background: #10b981;
+      color: #04120c;
+      font-weight: 700;
+      text-decoration: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
+      transition: transform 0.15s ease;
+    }
+    .cta:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <div class="badge">Pudú Power · oEmbed Live Node</div>
+  <h1>Pudú Power Ecosystem</h1>
+  <div class="meta" id="meta-info">Cargando mutación...</div>
+  <a class="cta" id="launch-link" href="https://pudupower.com" target="_top" rel="noopener">Abrir & Mutar en Vivo →</a>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const seed = params.get('seed') || 'pudu-prime';
+    const meme = params.get('meme') || 'classic';
+    document.getElementById('meta-info').textContent = 'SEED: ' + seed + ' | PRESET: ' + meme;
+    document.getElementById('launch-link').href = 'https://pudupower.com/?seed=' + encodeURIComponent(seed) + '&meme=' + encodeURIComponent(meme) + '&v_ref=oembed';
+  </script>
+</body>
+</html>
