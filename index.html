@@ -426,9 +426,9 @@
     /* 1. FONDO CINEMATOGRÁFICO CON PARALAJE MULTI-CAPA */
     .bg-stage {
       position: fixed;
-      inset: -6%;
-      width: 112%;
-      height: 112%;
+      inset: -140px;
+      width: calc(100% + 280px);
+      height: calc(100% + 280px);
       z-index: 0;
       overflow: hidden;
       background-color: var(--bg-dark);
@@ -448,7 +448,7 @@
       height: 100%;
       object-fit: cover;
       object-position: var(--focal-desktop);
-      transform: scale(1.06);
+      transform: scale(1.08);
       transform-origin: center center;
       filter: contrast(1.08) saturate(1.12) brightness(0.92);
       transition: object-position 0.4s ease;
@@ -1543,6 +1543,6 @@
 
   <script src="./i18n-auto.js?v=20261127a" defer></script>
   <script src="./physical-ui.js?v=20261126g"></script>
-  <script type="module" src="./glass-ui.js?v=20261127f"></script>
+  <script type="module" src="./glass-ui.js?v=20261127g"></script>
 </body>
 </html>

@@ -3371,11 +3371,11 @@ const puduBrain=new PuduAI();
 
     syncCameraProjection(W, H, ex, ey);
 
-    // Movimiento natural y armónico del fondo con acelerómetro/giroscopio y mouse
+    // Movimiento natural y armónico del fondo con acelerómetro/giroscopio y mouse (clamp <= 110px < 140px overscan)
     const bgStageEl = doc.querySelector('.bg-stage');
     if (bgStageEl) {
-      const bgShiftX = (-ex * 0.16).toFixed(2);
-      const bgShiftY = (-ey * 0.12).toFixed(2);
+      const bgShiftX = clamp(-ex * 0.16, -110, 110).toFixed(2);
+      const bgShiftY = clamp(-ey * 0.12, -110, 110).toFixed(2);
       bgStageEl.style.transform = `translate3d(${bgShiftX}px, ${bgShiftY}px, 0)`;
     }
 
