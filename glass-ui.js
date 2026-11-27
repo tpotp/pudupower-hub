@@ -378,11 +378,12 @@ import * as THREE from './vendor/three/three.module.js';
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, w, h);
 
-    const r = 24;
+    const r = Math.min(24, Math.round(h * 0.16));
     const accentDim = card.accentDim;
     const accentBg = card.accentBg;
     const tagColor = card.tagColor;
     const tagBg = card.tagBg;
+    const isCompact = h < 180 || w < 280;
 
     // 1. Fondo de vidrio oscuro translúcido con gradiente de profundidad
     ctx.save();
@@ -401,7 +402,93 @@ import * as THREE from './vendor/three/three.module.js';
     ctx.stroke();
     ctx.restore();
 
-    // 2. Encabezado con Icono y Flecha en la parte superior
+    if (isCompact) {
+      // Disposición compacta optimizada para pantallas táctiles y móviles
+      const padX = 16;
+      const iconSize = Math.min(56, Math.max(44, Math.round(h * 0.42)));
+      const iconY = Math.round((h - iconSize) / 2);
+
+      // Icono a la izquierda
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(padX, iconY, iconSize, iconSize, 14);
+      ctx.fillStyle = accentBg;
+      ctx.fill();
+      ctx.strokeStyle = accentDim;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      if (card._loadedIconImg && card._loadedIconImg.complete && card._loadedIconImg.naturalWidth > 0) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(padX, iconY, iconSize, iconSize, 14);
+        ctx.clip();
+        const img = card._loadedIconImg;
+        const nw = img.naturalWidth;
+        const nh = img.naturalHeight;
+        const minDim = Math.min(nw, nh);
+        const sx = (nw - minDim) / 2;
+        const sy = (nh - minDim) / 2;
+        ctx.drawImage(img, sx, sy, minDim, minDim, padX, iconY, iconSize, iconSize);
+        ctx.restore();
+      } else {
+        ctx.font = '24px system-ui, "Apple Color Emoji", "Segoe UI Emoji"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(card.icon, padX + iconSize / 2, iconY + iconSize / 2);
+      }
+      ctx.restore();
+
+      // Flecha en esquina superior derecha
+      ctx.save();
+      ctx.fillStyle = tagColor;
+      ctx.font = '700 17px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('↗', w - padX - 4, iconY + 12);
+      ctx.restore();
+
+      // Textos a la derecha del icono
+      const textX = padX + iconSize + 14;
+      const textMaxW = w - textX - padX - 16;
+
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      ctx.font = '800 16px "Cinzel", "Fraunces", Georgia, serif';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(card.title, textX, iconY + 2);
+
+      ctx.fillStyle = '#c5d2ca';
+      ctx.font = '400 11.5px "Inter", system-ui, sans-serif';
+      const descLines = layoutText(ctx, card.desc, textMaxW).slice(0, 2);
+      for (let l = 0; l < descLines.length; l++) {
+        ctx.fillText(descLines[l], textX, iconY + 24 + l * 15);
+      }
+      ctx.restore();
+
+      // Ribbon compacta si aplica
+      if (card.ribbon) {
+        ctx.save();
+        const rw = 58;
+        const rh = 16;
+        ctx.translate(w - 18, 16);
+        ctx.rotate((42 * Math.PI) / 180);
+        ctx.beginPath();
+        ctx.roundRect(-rw / 2, -rh / 2, rw, rh, 3);
+        ctx.fillStyle = 'rgba(255, 68, 88, 0.88)';
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 7.5px "Orbitron", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(card.ribbon, 0, 1);
+        ctx.restore();
+      }
+      return;
+    }
+
+    // Disposición estándar vertical (Desktop / Tablet)
     const padX = 22;
     const padTop = 20;
     const iconSize = 64;
@@ -3157,6 +3244,9 @@ const puduBrain=new PuduAI();
     lastFrameTime = now;
     const t = now * 0.001;
 
+    // Carousel tick
+    if (typeof window.__carouselTick === 'function') window.__carouselTick(now);
+
     updateAudioEnergy(dt, t);
 
     const eye = window.PhysicalUI && window.PhysicalUI.eye
@@ -3248,8 +3338,147 @@ const puduBrain=new PuduAI();
   function setup() {
     resize(true);
     window.addEventListener('resize', () => resize(false), { passive: true });
+    window.addEventListener('scroll', () => {
+      // Re-verificar tamaños y posiciones de tarjetas tras scroll
+      for (const card of cards) {
+        const el = doc.querySelector(card.sel);
+        if (el) {
+          const r = el.getBoundingClientRect();
+          const nw = Math.round(r.width);
+          const nh = Math.round(r.height);
+          if (nw > 0 && nh > 0 && (Math.abs(card.w - nw) > 4 || Math.abs(card.h - nh) > 4)) {
+            card.w = nw;
+            card.h = nh;
+            buildCard(card);
+          }
+        }
+      }
+    }, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => resize(false), { passive: true });
+      window.visualViewport.addEventListener('scroll', () => resize(false), { passive: true });
+    }
 
     doc.documentElement.classList.add('has-glass-3d');
+
+    /* =========================================================
+       CAROUSEL PHYSICS — auto-scroll + touch inertia + loop
+       ========================================================= */
+    (function initCarousel() {
+      const viewport = doc.getElementById('carouselViewport');
+      const track    = doc.getElementById('carouselTrack');
+      if (!viewport || !track) return;
+
+      const AUTO_SPEED = 28; // px/sec
+      const FRICTION   = 0.93; // per-frame decay when releasing
+      let offset    = 0;
+      let velocity  = AUTO_SPEED;
+      let dragging  = false;
+      let dragX     = 0;
+      let dragT     = 0;
+      let velCapture = 0;
+      let dragDelta  = 0;
+      let halfWidth  = 0; // half of track content (3 original cards)
+      let lastCarouselTime = performance.now();
+
+      function getHalfWidth() {
+        // 3 original + 3 clones → half = width of 3 originals + gap
+        const cards3 = Array.from(track.querySelectorAll('.mode-card:not(.carousel-clone)'));
+        if (!cards3.length) return track.scrollWidth / 2;
+        const last = cards3[cards3.length - 1];
+        const first = cards3[0];
+        const gap = parseFloat(getComputedStyle(track).gap) || 24;
+        return last.offsetLeft + last.offsetWidth - first.offsetLeft + gap;
+      }
+
+      function applyTransform() {
+        track.style.transform = `translateX(${-offset}px)`;
+      }
+
+      // Update carousel every frame (called from render loop via window event)
+      window.__carouselTick = function(now) {
+        const dt = Math.min((now - lastCarouselTime) / 1000, 0.05);
+        lastCarouselTime = now;
+        if (!halfWidth) halfWidth = getHalfWidth();
+
+        if (!dragging) {
+          // Smoothly approach AUTO_SPEED from whatever velocity we have
+          if (Math.abs(velocity) > AUTO_SPEED * 1.5) {
+            velocity *= FRICTION;
+          } else {
+            velocity += (AUTO_SPEED - velocity) * 0.04;
+          }
+          offset += velocity * dt;
+        }
+
+        // Seamless loop: when we've scrolled one "set" width, snap back
+        if (halfWidth > 0 && offset >= halfWidth) offset -= halfWidth;
+        if (offset < 0) offset += halfWidth;
+
+        applyTransform();
+      };
+
+      // Pointer drag
+      viewport.addEventListener('pointerdown', (e) => {
+        dragging  = true;
+        dragX     = e.clientX;
+        dragT     = performance.now();
+        dragDelta = 0;
+        velCapture = 0;
+        velocity  = 0;
+        viewport.setPointerCapture(e.pointerId);
+      }, { passive: true });
+
+      viewport.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx  = dragX - e.clientX;
+        const dt  = (performance.now() - dragT) / 1000 || 0.016;
+        velCapture = dx / dt;
+        dragDelta += Math.abs(dx);
+        offset    = Math.max(0, offset + dx);
+        dragX     = e.clientX;
+        dragT     = performance.now();
+        applyTransform();
+      }, { passive: true });
+
+      function endDrag(e) {
+        if (!dragging) return;
+        dragging = false;
+        // Apply fling velocity (capped)
+        velocity = Math.sign(velCapture) * Math.min(Math.abs(velCapture), 1200);
+        // Suppress click if significant drag occurred
+        if (dragDelta > 8 && e && e.target) {
+          const capture = (ev) => { ev.preventDefault(); ev.stopImmediatePropagation(); };
+          e.target.addEventListener('click', capture, { once: true, capture: true });
+        }
+      }
+
+      viewport.addEventListener('pointerup',     endDrag, { passive: true });
+      viewport.addEventListener('pointercancel', endDrag, { passive: true });
+
+      // Recalculate halfWidth on resize
+      window.addEventListener('resize', () => { halfWidth = 0; }, { passive: true });
+    })();
+
+    /* =========================================================
+       FLOATING WORDS — spawn animated text near Pudú's mouth
+       ========================================================= */
+    function spawnFloatingWord(text) {
+      const puduEl = doc.querySelector('.pudu-stage-zone') || doc.querySelector('#pudu3d-speech-bubble');
+      if (!puduEl) return;
+      const rect = puduEl.getBoundingClientRect();
+      const words = text.split(/\s+/).filter(Boolean);
+      words.forEach((word, i) => {
+        const el = doc.createElement('div');
+        el.className = 'floating-word';
+        el.textContent = word;
+        el.style.left   = `${rect.left + rect.width * 0.5 + (i - words.length / 2) * 32}px`;
+        el.style.top    = `${Math.max(rect.top, 60)}px`;
+        el.style.animationDelay = `${i * 0.12}s`;
+        doc.body.appendChild(el);
+        setTimeout(() => el.remove(), 2600 + i * 120);
+      });
+    }
 
     cards.forEach((card) => {
       const el = doc.querySelector(card.sel);
@@ -3258,6 +3487,7 @@ const puduBrain=new PuduAI();
       el.addEventListener('pointerenter', () => {
         card.hovered = true;
         speakPuduVoice(card.speech);
+        spawnFloatingWord(card.speech);
       });
 
       el.addEventListener('pointerdown', (e) => {
@@ -3296,7 +3526,9 @@ const puduBrain=new PuduAI();
 
     // Saludo inicial
     setTimeout(() => {
-      speakPuduVoice('¡Hola! Soy el Pudú guardián. Camina conmigo y explora nuestras 3 apps abajo.');
+      const greeting = '¡Elige una experiencia!';
+      speakPuduVoice(greeting);
+      spawnFloatingWord(greeting);
     }, 1200);
 
     render(performance.now());
