@@ -420,7 +420,13 @@ import * as THREE from './vendor/three/three.module.js';
       ctx.beginPath();
       ctx.roundRect(padX, padTop, iconSize, iconSize, 16);
       ctx.clip();
-      ctx.drawImage(card._loadedIconImg, padX, padTop, iconSize, iconSize);
+      const img = card._loadedIconImg;
+      const nw = img.naturalWidth;
+      const nh = img.naturalHeight;
+      const minDim = Math.min(nw, nh);
+      const sx = (nw - minDim) / 2;
+      const sy = (nh - minDim) / 2;
+      ctx.drawImage(img, sx, sy, minDim, minDim, padX, padTop, iconSize, iconSize);
       ctx.restore();
     } else {
       const icx = padX + iconSize / 2;
