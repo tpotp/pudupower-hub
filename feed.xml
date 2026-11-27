@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"
+     xmlns:atom="http://www.w3.org/2005/Atom"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:media="http://search.yahoo.com/mrss/">
+  <channel>
+    <title>The Power of the Pudú — Metal Progresivo Chileno &amp; Hub 3D</title>
+    <link>https://pudupower.com/</link>
+    <description>Hub oficial interactivo de The Power of the Pudú (Santiago, Chile). Metal progresivo, latin metal, Pudu Poop Maker (YTP), Barsalitsuni 3D Synth y PuduWorld Simulator.</description>
+    <language>es-CL</language>
+    <copyright>Copyright 2026 The Power of the Pudú</copyright>
+    <managingEditor>contacto@pudupower.com (The Power of the Pudú)</managingEditor>
+    <webMaster>contacto@pudupower.com (The Power of the Pudú)</webMaster>
+    <lastBuildDate>Fri, 27 Nov 2026 12:00:00 GMT</lastBuildDate>
+    <ttl>60</ttl>
+    <generator>spider-broadcaster.mjs/1.0 (Node.js ESM)</generator>
+    <atom:link href="https://pudupower.com/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://pubsubhubbub.appspot.com/" rel="hub" />
+    <atom:link href="https://pubsubhubbub.superfeedr.com/" rel="hub" />
+    <image>
+      <url>https://cdn.pudupower.com/art/pudu-portada-desktop.webp</url>
+      <title>The Power of the Pudú — Metal Progresivo Chileno</title>
+      <link>https://pudupower.com/</link>
+      <width>144</width>
+      <height>76</height>
+    </image>
+
+    <item>
+      <title>The Power of the Pudú — Hub Interactivo 3D &amp; Música Oficial</title>
+      <link>https://pudupower.com/</link>
+      <guid isPermaLink="true">https://pudupower.com/</guid>
+      <pubDate>Fri, 27 Nov 2026 12:00:00 GMT</pubDate>
+      <dc:creator>The Power of the Pudú</dc:creator>
+      <category>Progressive Metal</category>
+      <category>WebGL</category>
+      <category>Three.js</category>
+      <description>Ecosistema web 3D gratuito en Three.js, WebGL y WebCodecs de la banda chilena de metal progresivo y experimental The Power of the Pudú.</description>
+      <media:content url="https://cdn.pudupower.com/art/pudu-portada-desktop.webp" type="image/webp" medium="image" width="1200" height="630" />
+    </item>
+
+    <item>
+      <title>Pudu Poop Maker — Generador YTP Online</title>
+      <link>https://ytp.pudupower.com/</link>
+      <guid isPermaLink="true">https://ytp.pudupower.com/</guid>
+      <pubDate>Thu, 26 Nov 2026 12:00:00 GMT</pubDate>
+      <dc:creator>The Power of the Pudú</dc:creator>
+      <category>YTP Maker</category>
+      <category>WebCodecs</category>
+      <description>Crea videos estilo YouTube Poop (YTP) directamente en el navegador usando WebCodecs y aceleración WebGL sin registros ni descargas.</description>
+    </item>
+
+    <item>
+      <title>Barsalitsuni 3D — Sintetizador Visual &amp; Seam Carving</title>
+      <link>https://barsalitsuni.pudupower.com/</link>
+      <guid isPermaLink="true">https://barsalitsuni.pudupower.com/</guid>
+      <pubDate>Thu, 26 Nov 2026 12:00:00 GMT</pubDate>
+      <dc:creator>The Power of the Pudú</dc:creator>
+      <category>Visual Synth</category>
+      <category>Seam Carving 3D</category>
+      <description>Sintetizador visual 3D experimental con Chaos Audio y algoritmos de Seam Carving en tiempo real.</description>
+    </item>
+
+    <item>
+      <title>PuduWorld — Pudú Simulator 3D</title>
+      <link>https://simulator.pudupower.com/</link>
+      <guid isPermaLink="true">https://simulator.pudupower.com/</guid>
+      <pubDate>Thu, 26 Nov 2026 12:00:00 GMT</pubDate>
+      <dc:creator>The Power of the Pudú</dc:creator>
+      <category>3D Simulator</category>
+      <category>Indie Web</category>
+      <description>Explora PuduWorld en este simulador 3D interactivo ambientado en el universo musical y visual de The Power of the Pudú.</description>
+    </item>
+
+    <item>
+      <title>Sobre The Power of the Pudú — Historia y Proyecto</title>
+      <link>https://pudupower.com/about.html</link>
+      <guid isPermaLink="true">https://pudupower.com/about.html</guid>
+      <pubDate>Thu, 26 Nov 2026 12:00:00 GMT</pubDate>
+      <dc:creator>The Power of the Pudú</dc:creator>
+      <category>Band Bio</category>
+      <description>Conoce la historia de The Power of the Pudú, banda de metal progresivo y latin metal originaria de Santiago, Chile.</description>
+    </item>
+  </channel>
+</rss>

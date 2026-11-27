@@ -34,6 +34,11 @@
   Cache-Control: public, max-age=86400
   X-Robots-Tag: noindex
 
+/feed.xml
+  Content-Type: application/rss+xml; charset=utf-8
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
+
 /api/oembed
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=3600
