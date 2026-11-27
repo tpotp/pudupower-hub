@@ -403,24 +403,33 @@ import * as THREE from './vendor/three/three.module.js';
 
     // 2. Encabezado con Icono y Flecha en la parte superior
     const padX = 22;
-    const padTop = 22;
-    const iconSize = 44;
+    const padTop = 20;
+    const iconSize = 64;
 
     ctx.save();
     ctx.beginPath();
-    ctx.roundRect(padX, padTop, iconSize, iconSize, 14);
+    ctx.roundRect(padX, padTop, iconSize, iconSize, 16);
     ctx.fillStyle = accentBg;
     ctx.fill();
     ctx.strokeStyle = accentDim;
-    ctx.lineWidth = 1.2;
+    ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    const icx = padX + iconSize / 2;
-    const icy = padTop + iconSize / 2;
-    ctx.font = '24px system-ui, "Apple Color Emoji", "Segoe UI Emoji"';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(card.icon, icx, icy + 1);
+    if (card._loadedIconImg && card._loadedIconImg.complete && card._loadedIconImg.naturalWidth > 0) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(padX, padTop, iconSize, iconSize, 16);
+      ctx.clip();
+      ctx.drawImage(card._loadedIconImg, padX, padTop, iconSize, iconSize);
+      ctx.restore();
+    } else {
+      const icx = padX + iconSize / 2;
+      const icy = padTop + iconSize / 2;
+      ctx.font = '32px system-ui, "Apple Color Emoji", "Segoe UI Emoji"';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(card.icon, icx, icy + 1);
+    }
     ctx.restore();
 
     // Flecha de navegación estilizada en esquina superior derecha
@@ -513,6 +522,7 @@ import * as THREE from './vendor/three/three.module.js';
       desc: 'Caos sonoro y YTP en estado puro: blast beats, cortes esquizofrénicos y metal progresivo sin frenos.',
       tags: ['Blast Beats', 'Caos YTP'],
       icon: '💩',
+      iconImg: 'assets/poop_maker_logo.jpg',
       accentColor: 0x00ffaa,
       bodyColor: 0x0a140d,
       accentDim: 'rgba(0, 255, 170, 0.42)',
@@ -531,6 +541,7 @@ import * as THREE from './vendor/three/three.module.js';
       desc: 'Sintetizador visual 3D con seam carving y estética avant-garde chilena para distorsionar la realidad.',
       tags: ['Seam Carving 3D', 'Avant-Garde'],
       icon: '🌌',
+      iconImg: 'assets/barsalitsuni_thumb_circle.jpg',
       accentColor: 0xffb703,
       bodyColor: 0x1e150f,
       accentDim: 'rgba(255, 183, 3, 0.42)',
@@ -549,6 +560,7 @@ import * as THREE from './vendor/three/three.module.js';
       desc: 'Simulador 3D multijugador impulsado por IA generativa para una metamorfosis colectiva en tiempo real.',
       tags: ['IA Generativa', 'Metamorfosis 3D'],
       icon: '🦌',
+      iconImg: 'assets/puduworld_logo.jpg',
       accentColor: 0xff4458,
       bodyColor: 0x1a0d10,
       accentDim: 'rgba(255, 68, 88, 0.42)',
@@ -568,6 +580,15 @@ import * as THREE from './vendor/three/three.module.js';
     card.faceMesh = null;
     card.glassMesh = null;
     card.texCanvas = doc.createElement('canvas');
+    if (card.iconImg) {
+      const img = new Image();
+      img.onload = () => {
+        card._loadedIconImg = img;
+        if (typeof drawCardTexture === 'function') drawCardTexture(card);
+        if (card.tex) card.tex.needsUpdate = true;
+      };
+      img.src = card.iconImg;
+    }
     card.texture = null;
     card.press = 0;
     card.targetPress = 0;
