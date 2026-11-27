@@ -656,6 +656,13 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
     }
   ];
 
+  // Duplicar configuraciones de tarjetas para los clones del loop infinito del carrusel
+  const origCardCount = cards.length;
+  for (let i = 0; i < origCardCount; i++) {
+    const cloneCfg = { ...cards[i], sel: `${cards[i].sel}-clone`, isClone: true };
+    cards.push(cloneCfg);
+  }
+
   for (const card of cards) {
     card.group = null;
     card.faceMesh = null;
@@ -665,8 +672,11 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
       const img = new Image();
       img.onload = () => {
         card._loadedIconImg = img;
-        if (typeof drawCardTexture === 'function') drawCardTexture(card);
-        if (card.tex) card.tex.needsUpdate = true;
+        if (card.w > 0 && card.h > 0 && card.texCanvas) {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          drawCardTexture(card.texCanvas, card, card.w, card.h, dpr);
+          if (card.texture) card.texture.needsUpdate = true;
+        }
       };
       img.src = card.iconImg;
     }
@@ -738,7 +748,9 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
     const faceMat = new THREE.MeshBasicMaterial({
       map: card.texture,
       transparent: true,
-      opacity: 0.98
+      opacity: 0.98,
+      depthTest: true,
+      depthWrite: false
     });
     if (card.faceMesh) {
       card.group.remove(card.faceMesh);
@@ -746,7 +758,9 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
       card.faceMesh.material.dispose();
     }
     card.faceMesh = new THREE.Mesh(faceGeo, faceMat);
-    card.faceMesh.position.set(0, 0, 0.2); // Justo en la cara frontal z=0
+    card.faceMesh.position.set(0, 0, 0.5); // Claramente sobre la cara frontal z=0
+    card.faceMesh.renderOrder = 2;
+    card.faceMesh.frustumCulled = false;
     card.group.add(card.faceMesh);
 
     // 4. Cuerpo de vidrio 3D extruido con bisel pulido
@@ -772,6 +786,8 @@ import { RoomEnvironment } from './vendor/three/RoomEnvironment.js';
       card.glassMesh.geometry.dispose();
     }
     card.glassMesh = new THREE.Mesh(glassGeo, card.glassMaterial);
+    card.glassMesh.renderOrder = 1;
+    card.glassMesh.frustumCulled = false;
     card.group.add(card.glassMesh);
   }
 
@@ -2915,10 +2931,9 @@ const puduBrain=new PuduAI();
     for (const card of cards) {
       const el = doc.querySelector(card.sel);
       if (el) {
-        const r = el.getBoundingClientRect();
-        const nw = Math.round(r.width);
-        const nh = Math.round(r.height);
-        if (nw && nh && (forceRebuild || nw !== card.w || nh !== card.h)) {
+        const nw = Math.round(el.offsetWidth || el.getBoundingClientRect().width);
+        const nh = Math.round(el.offsetHeight || el.getBoundingClientRect().height);
+        if (nw > 0 && nh > 0 && (forceRebuild || Math.abs(nw - card.w) > 2 || Math.abs(nh - card.h) > 2)) {
           card.w = nw;
           card.h = nh;
           buildCard(card);
@@ -3327,25 +3342,8 @@ const puduBrain=new PuduAI();
   function setup() {
     resize(true);
     window.addEventListener('resize', () => resize(false), { passive: true });
-    window.addEventListener('scroll', () => {
-      // Re-verificar tamaños y posiciones de tarjetas tras scroll
-      for (const card of cards) {
-        const el = doc.querySelector(card.sel);
-        if (el) {
-          const r = el.getBoundingClientRect();
-          const nw = Math.round(r.width);
-          const nh = Math.round(r.height);
-          if (nw > 0 && nh > 0 && (Math.abs(card.w - nw) > 4 || Math.abs(card.h - nh) > 4)) {
-            card.w = nw;
-            card.h = nh;
-            buildCard(card);
-          }
-        }
-      }
-    }, { passive: true });
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', () => resize(false), { passive: true });
-      window.visualViewport.addEventListener('scroll', () => resize(false), { passive: true });
     }
 
     doc.documentElement.classList.add('has-glass-3d');
@@ -3353,17 +3351,20 @@ const puduBrain=new PuduAI();
     /* =========================================================
        CAROUSEL PHYSICS — auto-scroll + touch inertia + loop
        ========================================================= */
+    let suppressClickUntil = 0;
     (function initCarousel() {
       const viewport = doc.getElementById('carouselViewport');
       const track    = doc.getElementById('carouselTrack');
       if (!viewport || !track) return;
 
-      const AUTO_SPEED = 25; // px/sec
+      const AUTO_SPEED = 24; // px/sec
       const FRICTION   = 0.93; // per-frame decay when releasing
       let offset    = 0;
       let velocity  = 0; // starts at 0, accelerates to AUTO_SPEED
       let dragging  = false;
+      let activePointerId = null;
       let dragX     = 0;
+      let dragY     = 0;
       let dragT     = 0;
       let velCapture = 0;
       let dragDelta  = 0;
@@ -3371,7 +3372,6 @@ const puduBrain=new PuduAI();
       let lastCarouselTime = performance.now();
 
       function getHalfWidth() {
-        // 3 original + 3 clones → half = width of 3 originals + gap
         const cards3 = Array.from(track.querySelectorAll('.mode-card:not(.carousel-clone)'));
         if (!cards3.length) return track.scrollWidth / 2;
         const last = cards3[cards3.length - 1];
@@ -3380,8 +3380,13 @@ const puduBrain=new PuduAI();
         return last.offsetLeft + last.offsetWidth - first.offsetLeft + gap;
       }
 
+      function wrapOffset(val) {
+        if (!halfWidth || halfWidth <= 0) return Math.max(0, val);
+        return ((val % halfWidth) + halfWidth) % halfWidth;
+      }
+
       function applyTransform() {
-        track.style.transform = `translateX(${-offset}px)`;
+        track.style.transform = `translate3d(${-offset.toFixed(2)}px, 0, 0)`;
       }
 
       // Update carousel every frame (called from render loop via window event)
@@ -3391,61 +3396,68 @@ const puduBrain=new PuduAI();
         if (!halfWidth) halfWidth = getHalfWidth();
 
         if (!dragging) {
-          // Smoothly approach AUTO_SPEED from whatever velocity we have
           if (Math.abs(velocity) > AUTO_SPEED * 1.5) {
             velocity *= FRICTION;
           } else {
             velocity += (AUTO_SPEED - velocity) * 0.04;
           }
-          offset += velocity * dt;
+          offset = wrapOffset(offset + velocity * dt);
         }
-
-        // Seamless loop: when we've scrolled one "set" width, snap back
-        if (halfWidth > 0 && offset >= halfWidth) offset -= halfWidth;
-        if (offset < 0) offset += halfWidth;
 
         applyTransform();
       };
 
-      // Pointer drag
+      // Pointer drag via window listeners (Android Redmi 10C / iOS Safari bulletproof, no setPointerCapture)
       viewport.addEventListener('pointerdown', (e) => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
         dragging  = true;
+        activePointerId = e.pointerId;
         dragX     = e.clientX;
+        dragY     = e.clientY;
         dragT     = performance.now();
         dragDelta = 0;
         velCapture = 0;
         velocity  = 0;
-        viewport.setPointerCapture(e.pointerId);
       }, { passive: true });
 
-      viewport.addEventListener('pointermove', (e) => {
-        if (!dragging) return;
+      window.addEventListener('pointermove', (e) => {
+        if (!dragging || (activePointerId !== null && e.pointerId !== activePointerId)) return;
         const dx  = dragX - e.clientX;
-        const dt  = (performance.now() - dragT) / 1000 || 0.016;
-        velCapture = dx / dt;
+        const now = performance.now();
+        const dt  = Math.max((now - dragT) / 1000, 0.008);
+        const instVel = dx / dt;
+        velCapture = velCapture * 0.45 + instVel * 0.55;
         dragDelta += Math.abs(dx);
-        offset    = Math.max(0, offset + dx);
+        if (!halfWidth) halfWidth = getHalfWidth();
+        offset    = wrapOffset(offset + dx);
         dragX     = e.clientX;
-        dragT     = performance.now();
+        dragY     = e.clientY;
+        dragT     = now;
+        if (dragDelta > 8) {
+          suppressClickUntil = now + 400;
+          for (const c of cards) c.targetPress = 0;
+        }
         applyTransform();
       }, { passive: true });
 
       function endDrag(e) {
         if (!dragging) return;
+        if (e && activePointerId !== null && e.pointerId !== undefined && e.pointerId !== activePointerId) return;
         dragging = false;
-        // Apply fling velocity (capped)
-        velocity = Math.sign(velCapture) * Math.min(Math.abs(velCapture), 1200);
-        // Suppress click if significant drag occurred
-        if (dragDelta > 8 && e && e.target) {
-          const capture = (ev) => { ev.preventDefault(); ev.stopImmediatePropagation(); };
-          e.target.addEventListener('click', capture, { once: true, capture: true });
+        activePointerId = null;
+        if (dragDelta > 8) {
+          suppressClickUntil = performance.now() + 400;
+          velocity = Math.sign(velCapture) * Math.min(Math.abs(velCapture), 1400);
+        } else {
+          velocity = AUTO_SPEED;
         }
+        for (const c of cards) c.targetPress = 0;
       }
 
-      viewport.addEventListener('pointerup',     endDrag, { passive: true });
-      viewport.addEventListener('pointercancel', endDrag, { passive: true });
+      window.addEventListener('pointerup',     endDrag, { passive: true });
+      window.addEventListener('pointercancel', endDrag, { passive: true });
 
-      // Recalculate halfWidth on resize
+      // Recalculate halfWidth on resize / fonts ready
       window.addEventListener('resize', () => { halfWidth = 0; }, { passive: true });
     })();
 
@@ -3479,9 +3491,8 @@ const puduBrain=new PuduAI();
         spawnFloatingWord(card.speech);
       });
 
-      el.addEventListener('pointerdown', (e) => {
+      el.addEventListener('pointerdown', () => {
         card.targetPress = 1;
-        triggerCardFlight(card, e);
       }, { passive: true });
 
       el.addEventListener('pointerup', () => { card.targetPress = 0; }, { passive: true });
@@ -3493,6 +3504,7 @@ const puduBrain=new PuduAI();
 
       el.addEventListener('click', (e) => {
         e.preventDefault();
+        if (performance.now() < suppressClickUntil) return;
         triggerCardFlight(card, e);
       });
     });
