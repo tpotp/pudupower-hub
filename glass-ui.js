@@ -1189,6 +1189,7 @@ const puduBrain=new PuduAI();
 
     const snoutTipGeo = new THREE.SphereGeometry(0.125, 36, 28);
     const snoutTip = addPart(snoutTipGeo, 0x33ffbb, headGroup, 0.72, 0.16);
+    P.snoutTip = snoutTip;
     snoutTip.position.set(0, -0.085, 0.47);
     snoutTip.scale.set(1.08, 0.78, 0.85);
     addFur(snoutTipGeo, 0x33ffaa, snoutTip, 1.05, 0.16);
@@ -1627,52 +1628,147 @@ const puduBrain=new PuduAI();
     }
   }
 
-  function updateMouth(t) {
+  function stepSpring(val, vel, target, stiffness, damping, dt) {
+    const force = (target - val) * stiffness;
+    vel += (force - vel * damping) * dt;
+    val += vel * dt;
+    return [val, vel];
+  }
+
+  function updateMouth(t, dt = 0.016) {
     if (!puduParts.mouthSmile) return;
+    const safeDt = Math.min(dt || 0.016, 0.05);
     let shape = puduBrain.mouthShape;
-    if (puduSpeakingActive) {
-      const talkCycle = Math.sin(t * 22);
-      if (talkCycle > 0.2) shape = 'open';
-      else if (talkCycle > -0.3) shape = 'smile';
-      else shape = 'happy';
+
+    // 1. Determinar visema objetivo (habla activa vs estado emocional)
+    let targetV = VISEME_TABLE.REST;
+    let isTalking = puduSpeakingActive && puduLipSync.active;
+
+    if (isTalking) {
+      const elapsed = performance.now() * 0.001 - puduLipSync.startTime;
+      const tl = puduLipSync.timeline;
+      let seg = tl[tl.length - 1];
+      for (let i = 0; i < tl.length; i++) {
+        if (elapsed >= tl[i].t0 && elapsed < tl[i].t1) {
+          seg = tl[i];
+          break;
+        }
+      }
+      if (elapsed >= (tl[tl.length - 1]?.t1 ?? 0) + 0.25) {
+        isTalking = false;
+      } else if (seg) {
+        targetV = VISEME_TABLE[seg.viseme] || VISEME_TABLE.REST;
+        // Micro-asentimiento dulce de cabeza en sílabas acentuadas
+        puduLipSync.headBob += ((seg.stress * 0.045) - puduLipSync.headBob) * 0.22;
+      }
+    } else {
+      puduLipSync.headBob *= 0.88;
+      if (shape === 'yawn') {
+        const yw = 0.5 + 0.5 * Math.sin(t * 2.4);
+        targetV = { open: 0.65 + yw * 0.35, width: 1.12, depth: 0.78, tongue: 0.25, snoutZ: 0.01, snoutY: -0.006 };
+      } else if (shape === 'eating') {
+        const chew = Math.abs(Math.sin(t * 10.5));
+        targetV = { open: chew * 0.62, width: 1.05 - chew * 0.12, depth: 0.72, tongue: chew * 0.55, snoutZ: chew * 0.012, snoutY: -chew * 0.004 };
+      } else if (shape === 'open') {
+        targetV = VISEME_TABLE.A;
+      }
     }
 
-    const targets = { smile: 0.85, open: 0, angry: 0, happy: 0 };
-    if (shape === 'smile') targets.smile = 0.85;
-    else if (shape === 'open' || shape === 'yawn') { targets.open = 0.85; targets.smile = 0; }
-    else if (shape === 'angry') { targets.angry = 0.85; targets.smile = 0; }
-    else if (shape === 'happy' || shape === 'eating') { targets.happy = 0.85; targets.smile = 0; }
-    else if (shape === 'worried') { targets.smile = 0.45; }
-    else if (shape === 'sleepy') { targets.smile = 0.35; }
+    // 2. Integración física elástica (resorte sub-amortiguado para organicidad)
+    const k = isTalking ? 260 : 140;
+    const d = isTalking ? 21 : 16;
+    [puduLipSync.open, puduLipSync.vOpen]     = stepSpring(puduLipSync.open,   puduLipSync.vOpen,   targetV.open,   k, d, safeDt);
+    [puduLipSync.width, puduLipSync.vWidth]   = stepSpring(puduLipSync.width,  puduLipSync.vWidth,  targetV.width,  k, d, safeDt);
+    [puduLipSync.depth, puduLipSync.vDepth]   = stepSpring(puduLipSync.depth,  puduLipSync.vDepth,  targetV.depth,  k, d, safeDt);
+    [puduLipSync.tongue, puduLipSync.vTongue] = stepSpring(puduLipSync.tongue, puduLipSync.vTongue, targetV.tongue, k, d, safeDt);
+    [puduLipSync.snoutZ, puduLipSync.vSnoutZ] = stepSpring(puduLipSync.snoutZ, puduLipSync.vSnoutZ, targetV.snoutZ, k, d, safeDt);
+    [puduLipSync.snoutY, puduLipSync.vSnoutY] = stepSpring(puduLipSync.snoutY, puduLipSync.vSnoutY, targetV.snoutY, k, d, safeDt);
+
+    const openAmt = Math.max(0, Math.min(1.2, puduLipSync.open));
+
+    // 3. Opacidades cruzadas según apertura real y emoción
+    const targets = { smile: 0, open: 0, angry: 0, happy: 0 };
+    if (isTalking || shape === 'yawn' || shape === 'open') {
+      targets.open = Math.min(0.92, openAmt * 1.05);
+      targets.smile = Math.max(0, 0.85 - openAmt * 1.15);
+      targets.happy = Math.max(0, (puduLipSync.tongue - 0.15) * 0.9);
+    } else if (shape === 'angry') {
+      targets.angry = 0.85;
+    } else if (shape === 'happy' || shape === 'eating') {
+      targets.happy = 0.85;
+    } else if (shape === 'worried') {
+      targets.smile = 0.45;
+    } else if (shape === 'sleepy') {
+      targets.smile = 0.35;
+    } else {
+      targets.smile = 0.85;
+    }
 
     puduParts.mouthSmile.children.forEach((c) => {
-      if (c.material) c.material.opacity += (targets.smile - c.material.opacity) * 0.12;
+      if (c.material) c.material.opacity += (targets.smile - c.material.opacity) * 0.22;
     });
-    puduParts.mouthOpen.material.opacity += (targets.open - puduParts.mouthOpen.material.opacity) * 0.12;
-    puduParts.mouthAngry.material.opacity += (targets.angry - puduParts.mouthAngry.material.opacity) * 0.12;
-    puduParts.mouthHappy.children.forEach((c) => {
-      if (c.material) c.material.opacity += (targets.happy - c.material.opacity) * 0.12;
+    puduParts.mouthOpen.material.opacity += (targets.open - puduParts.mouthOpen.material.opacity) * 0.25;
+    puduParts.mouthAngry.material.opacity += (targets.angry - puduParts.mouthAngry.material.opacity) * 0.16;
+
+    // En mouthHappy, el último hijo es la lengua (tongue)
+    const happyKids = puduParts.mouthHappy.children;
+    happyKids.forEach((c, idx) => {
+      const isTongue = idx === happyKids.length - 1;
+      const targetOp = isTongue ? Math.max(targets.happy, puduLipSync.tongue * 0.9) : targets.happy;
+      if (c.material) c.material.opacity += (targetOp - c.material.opacity) * 0.22;
+      if (isTongue) {
+        c.position.y = -0.146 - openAmt * 0.014;
+        c.position.z = 0.526 + puduLipSync.tongue * 0.016;
+        c.scale.set(
+          0.95 + puduLipSync.tongue * 0.15,
+          0.52 + puduLipSync.tongue * 0.28,
+          0.68 + puduLipSync.tongue * 0.25
+        );
+      }
     });
 
-    // Morfos simulados vía escala/posición de boca y nariz
-    const smileScaleX = shape === 'worried' ? 0.78 : (shape === 'sleepy' ? 0.85 : 1.0 + Math.sin(t * 2.2) * 0.04);
-    puduParts.mouthSmile.scale.x += (smileScaleX - puduParts.mouthSmile.scale.x) * 0.12;
-    puduParts.mouthSmile.scale.y += ((shape === 'worried' ? -0.8 : 1.0) - puduParts.mouthSmile.scale.y) * 0.1;
+    // 4. Transformación 3D de la boca (apertura Y, redondeo X, profundidad Z)
+    puduParts.mouthOpen.scale.set(
+      0.85 * puduLipSync.width,
+      0.22 + openAmt * 0.78,
+      puduLipSync.depth
+    );
+    puduParts.mouthOpen.position.y = -0.132 - openAmt * 0.012;
+    puduParts.mouthOpen.position.z = 0.518 + puduLipSync.snoutZ * 0.7;
 
-    if (shape === 'yawn') {
-      puduParts.mouthOpen.scale.set(1.15, 0.85 + Math.sin(t * 2.5) * 0.35, 0.7);
-    } else if (shape === 'eating') {
-      puduParts.mouthHappy.scale.y = 0.85 + Math.abs(Math.sin(t * 10)) * 0.35;
-    } else {
-      puduParts.mouthOpen.scale.set(1, 0.7, 0.6);
-      puduParts.mouthHappy.scale.y += (1 - puduParts.mouthHappy.scale.y) * 0.12;
+    const smileScaleX = shape === 'worried'
+      ? 0.78
+      : (isTalking ? puduLipSync.width : (1.0 + Math.sin(t * 2.2) * 0.04));
+    puduParts.mouthSmile.scale.x += (smileScaleX - puduParts.mouthSmile.scale.x) * 0.2;
+    puduParts.mouthSmile.scale.y += ((shape === 'worried' ? -0.8 : 1.0) - puduParts.mouthSmile.scale.y) * 0.15;
+    puduParts.mouthSmile.position.z = puduLipSync.snoutZ * 0.6;
+
+    puduParts.mouthHappy.scale.set(
+      0.92 + (puduLipSync.width - 1) * 0.45,
+      0.88 + openAmt * 0.32,
+      1.0 + (puduLipSync.depth - 0.6) * 0.35
+    );
+
+    // 5. Co-articulación orgánica de hocico (snoutTip), nariz y cabeza (head)
+    if (puduParts.snoutTip) {
+      puduParts.snoutTip.position.z = 0.47 + puduLipSync.snoutZ;
+      puduParts.snoutTip.position.y = -0.085 + puduLipSync.snoutY;
+      puduParts.snoutTip.scale.set(
+        1.08 + (puduLipSync.width - 1) * 0.08,
+        0.78 - openAmt * 0.05,
+        0.85 + puduLipSync.snoutZ * 2.2
+      );
     }
 
-    // Micro-twitch orgánico de la nariz (olfateo)
     if (puduParts.nose) {
       const sniff = Math.sin(t * 4.5) * 0.004 + (Math.sin(t * 13) > 0.92 ? 0.005 : 0);
-      puduParts.nose.position.y = -0.055 + sniff;
+      puduParts.nose.position.y = -0.055 + sniff + puduLipSync.snoutY * 0.8;
+      puduParts.nose.position.z = 0.565 + puduLipSync.snoutZ * 0.9; // acompaña protrusión del hocico
       puduParts.nose.scale.x = 1.25 + Math.sin(t * 3.8) * 0.04;
+    }
+
+    if (puduParts.head && isTalking) {
+      puduParts.head.rotation.x += (puduLipSync.headBob * 0.65 - puduParts.head.rotation.x) * 0.12;
     }
   }
 
@@ -2283,12 +2379,272 @@ const puduBrain=new PuduAI();
      ══════════════════════════════════════════════════════════════ */
   let speechTimer = 0;
 
-  function stopMouthAnim() {
-    puduSpeakingActive = false;
+  /* ---------- Motor de Voz Tierna & Visemas del Pudú ---------- */
+  let puduAudioCtx = null;
+  let puduVoiceNodes = [];
+  let cachedEsVoice = null;
+
+  const VISEME_TABLE = {
+    REST: { open: 0.00, width: 1.00, depth: 0.60, tongue: 0.00, snoutZ: 0.000, snoutY: 0.000 },
+    A:    { open: 1.00, width: 0.96, depth: 0.78, tongue: 0.75, snoutZ: 0.008, snoutY: -0.005 },
+    E:    { open: 0.56, width: 1.24, depth: 0.62, tongue: 0.35, snoutZ: 0.004, snoutY: -0.002 },
+    I:    { open: 0.32, width: 1.32, depth: 0.55, tongue: 0.18, snoutZ: 0.002, snoutY:  0.002 },
+    O:    { open: 0.82, width: 0.68, depth: 1.05, tongue: 0.12, snoutZ: 0.020, snoutY: -0.003 },
+    U:    { open: 0.48, width: 0.52, depth: 1.18, tongue: 0.04, snoutZ: 0.026, snoutY:  0.000 },
+    MBP:  { open: 0.00, width: 0.88, depth: 0.48, tongue: 0.00, snoutZ: -0.004, snoutY: 0.003 },
+    FV:   { open: 0.22, width: 1.08, depth: 0.56, tongue: 0.08, snoutZ: 0.005, snoutY:  0.001 },
+    CONS: { open: 0.38, width: 1.04, depth: 0.64, tongue: 0.22, snoutZ: 0.004, snoutY: -0.001 }
+  };
+
+  // Formantes vocálicos dulces (F1, F2 en Hz) para síntesis estilo Animal Crossing
+  const FORMANT_VOWELS = {
+    A: { f1: 780, f2: 1280, pitchMul: 1.00 },
+    E: { f1: 520, f2: 1980, pitchMul: 1.06 },
+    I: { f1: 340, f2: 2450, pitchMul: 1.12 },
+    O: { f1: 500, f2: 920,  pitchMul: 0.96 },
+    U: { f1: 350, f2: 760,  pitchMul: 0.93 }
+  };
+
+  const puduLipSync = {
+    active: false,
+    startTime: 0,
+    timeline: [],      // [{ t0, t1, viseme, charIndex, stress }]
+    cursorIndex: 0,
+    // Estado físico (resorte-amortiguador)
+    open: 0,    vOpen: 0,
+    width: 1,   vWidth: 0,
+    depth: 0.6, vDepth: 0,
+    tongue: 0,  vTongue: 0,
+    snoutZ: 0,  vSnoutZ: 0,
+    snoutY: 0,  vSnoutY: 0,
+    headBob: 0
+  };
+
+  function getPuduAudioCtx() {
+    if (!puduAudioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) puduAudioCtx = new AC();
+    }
+    if (puduAudioCtx && puduAudioCtx.state === 'suspended') {
+      puduAudioCtx.resume().catch(() => {});
+    }
+    return puduAudioCtx;
   }
 
-  function speakPuduVoice(text) {
+  function pickSweetSpanishVoice() {
+    if (!('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    if (!voices.length) return cachedEsVoice;
+
+    // Ranking curado de voces cálidas/dulces en Chrome, Safari, iOS y Android
+    const preferredNames = [
+      'paulina', 'dalia', 'sabina', 'mónica', 'monica', 'helena',
+      'laura', 'luciana', 'paloma', 'marisol', 'sofia', 'sofía',
+      'google español', 'es-cl', 'es-mx', 'es-us', 'es-es'
+    ];
+
+    const esVoices = voices.filter((v) =>
+      v.lang && (v.lang.toLowerCase().startsWith('es') || v.name.toLowerCase().includes('spanish'))
+    );
+    if (!esVoices.length) return null;
+
+    let best = esVoices[0];
+    let bestScore = -1;
+    for (const v of esVoices) {
+      const name = v.name.toLowerCase();
+      const lang = v.lang.toLowerCase();
+      let score = 0;
+      if (lang.startsWith('es-cl')) score += 40;
+      else if (lang.startsWith('es-mx') || lang.startsWith('es-419')) score += 30;
+      else if (lang.startsWith('es')) score += 20;
+
+      preferredNames.forEach((kw, idx) => {
+        if (name.includes(kw)) score += (60 - idx * 2);
+      });
+      if (name.includes('natural') || name.includes('neural') || name.includes('premium')) score += 25;
+      if (name.includes('male') || name.includes('jorge') || name.includes('diego') || name.includes('pablo')) score -= 35;
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = v;
+      }
+    }
+    cachedEsVoice = best;
+    return best;
+  }
+
+  if ('speechSynthesis' in window && window.speechSynthesis.addEventListener) {
+    window.speechSynthesis.addEventListener('voiceschanged', pickSweetSpanishVoice);
+  }
+
+  function charToViseme(ch) {
+    const c = ch.toLowerCase();
+    if ('aáàä'.includes(c)) return 'A';
+    if ('eéèë'.includes(c)) return 'E';
+    if ('iíìïy'.includes(c)) return 'I';
+    if ('oóòö'.includes(c)) return 'O';
+    if ('uúùüw'.includes(c)) return 'U';
+    if ('mbp'.includes(c)) return 'MBP';
+    if ('fv'.includes(c)) return 'FV';
+    if (/[a-zñ]/.test(c)) return 'CONS';
+    return 'REST';
+  }
+
+  function buildVisemeTimeline(text, rate = 1.06) {
+    const timeline = [];
+    let t = 0;
+    const baseStep = 0.068 / rate;
+
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      const v = charToViseme(ch);
+      let dur = baseStep;
+      let stress = 0.5;
+
+      if (v === 'REST') {
+        dur = (ch === ',' || ch === ';') ? 0.19 : ('.!?¡¿'.includes(ch) ? 0.28 : 0.075);
+      } else if ('AEIOU'.includes(v)) {
+        dur = baseStep * 1.45;
+        stress = 'áéíóú'.includes(ch.toLowerCase()) ? 1.0 : 0.78;
+      } else if (v === 'MBP') {
+        dur = baseStep * 0.85;
+        stress = 0.3;
+      }
+
+      // Colapsar consonantes repetidas suaves para evitar jitter
+      const prev = timeline[timeline.length - 1];
+      if (prev && prev.viseme === v && v === 'CONS') {
+        prev.t1 += dur * 0.65;
+        t = prev.t1;
+      } else {
+        timeline.push({ t0: t, t1: t + dur, viseme: v, charIndex: i, stress });
+        t += dur;
+      }
+    }
+    timeline.push({ t0: t, t1: t + 0.18, viseme: 'REST', charIndex: text.length, stress: 0 });
+    return { timeline, totalDuration: t + 0.18 };
+  }
+
+  function playPuduChirp(ctx, when, duration = 0.14) {
+    try {
+      const osc = ctx.createOscillator();
+      const sub = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      osc.type = 'triangle';
+      sub.type = 'sine';
+      osc.frequency.setValueAtTime(520, when);
+      osc.frequency.exponentialRampToValueAtTime(860, when + duration * 0.65);
+      osc.frequency.exponentialRampToValueAtTime(740, when + duration);
+
+      sub.frequency.setValueAtTime(1040, when);
+      sub.frequency.exponentialRampToValueAtTime(1480, when + duration);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2800, when);
+      filter.Q.value = 2.2;
+
+      gain.gain.setValueAtTime(0.0001, when);
+      gain.gain.linearRampToValueAtTime(0.11, when + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, when + duration);
+
+      osc.connect(filter);
+      sub.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(when);
+      sub.start(when);
+      osc.stop(when + duration + 0.02);
+      sub.stop(when + duration + 0.02);
+      puduVoiceNodes.push(osc, sub);
+    } catch (_) {}
+  }
+
+  function playPuduAnimalese(text, timeline) {
+    const ctx = getPuduAudioCtx();
+    if (!ctx) return;
+
+    const now = ctx.currentTime + 0.02;
+    const master = ctx.createGain();
+    const lp = ctx.createBiquadFilter();
+    lp.type = 'lowpass';
+    lp.frequency.value = 3400;
+    master.gain.value = 0.22;
+    lp.connect(master);
+    master.connect(ctx.destination);
+
+    // Agrupamos por sílabas vocálicas para que suene dulce y musical, no entrecortado
+    let lastPlayTime = -1;
+    timeline.forEach((seg, idx) => {
+      if (!'AEIOU'.includes(seg.viseme)) return;
+      const tStart = now + seg.t0;
+      if (tStart - lastPlayTime < 0.075) return; // Máx ~13 sílabas/seg
+      lastPlayTime = tStart;
+
+      const fmt = FORMANT_VOWELS[seg.viseme];
+      const dur = Math.min(0.14, Math.max(0.075, (seg.t1 - seg.t0) * 1.15));
+      const baseF0 = (490 + Math.sin(idx * 1.3) * 45 + seg.stress * 55) * fmt.pitchMul;
+
+      const osc = ctx.createOscillator();
+      const vibrato = ctx.createOscillator();
+      const vibGain = ctx.createGain();
+      const f1 = ctx.createBiquadFilter();
+      const f2 = ctx.createBiquadFilter();
+      const env = ctx.createGain();
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(baseF0 * 0.96, tStart);
+      osc.frequency.exponentialRampToValueAtTime(baseF0 * 1.05, tStart + dur * 0.7);
+
+      vibrato.frequency.value = 5.5;
+      vibGain.gain.value = 8;
+      vibrato.connect(vibGain);
+      vibGain.connect(osc.frequency);
+
+      f1.type = 'bandpass'; f1.frequency.value = fmt.f1; f1.Q.value = 4.5;
+      f2.type = 'bandpass'; f2.frequency.value = fmt.f2; f2.Q.value = 5.5;
+
+      env.gain.setValueAtTime(0.0001, tStart);
+      env.gain.linearRampToValueAtTime(0.85, tStart + 0.018);
+      env.gain.exponentialRampToValueAtTime(0.0001, tStart + dur);
+
+      osc.connect(f1);
+      osc.connect(f2);
+      f1.connect(env);
+      f2.connect(env);
+      env.connect(lp);
+
+      osc.start(tStart);
+      vibrato.start(tStart);
+      osc.stop(tStart + dur + 0.02);
+      vibrato.stop(tStart + dur + 0.02);
+      puduVoiceNodes.push(osc, vibrato);
+    });
+  }
+
+  function stopMouthAnim() {
+    puduSpeakingActive = false;
+    puduLipSync.active = false;
+    puduVoiceNodes.forEach((n) => {
+      try { n.stop(); } catch (_) {}
+    });
+    puduVoiceNodes = [];
+  }
+
+  /**
+   * Voz dulce del Pudú
+   * @param {string} text
+   * @param {'hybrid'|'pudu'|'tts'} mode - 'hybrid' = trino mágico + TTS dulce; 'pudu' = 100% Web Audio formantes
+   */
+  function speakPuduVoice(text, mode = 'hybrid') {
     if (!text) return;
+    stopMouthAnim();
+
+    const clean = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[#*_~`]/g, '').trim();
+    const { timeline, totalDuration } = buildVisemeTimeline(clean, 1.06);
+
     if (bubbleEl) {
       bubbleEl.textContent = text;
       bubbleEl.classList.add('active');
@@ -2296,29 +2652,66 @@ const puduBrain=new PuduAI();
       speechTimer = setTimeout(() => {
         bubbleEl.classList.remove('active');
         stopMouthAnim();
-      }, 5500);
+      }, Math.max(4500, totalDuration * 1000 + 1200));
     }
 
-    if (!('speechSynthesis' in window)) return;
+    puduSpeakingActive = true;
+    puduLipSync.active = true;
+    puduLipSync.startTime = performance.now() * 0.001;
+    puduLipSync.timeline = timeline;
+    puduLipSync.cursorIndex = 0;
+
+    const ctx = getPuduAudioCtx();
+    if (ctx) playPuduChirp(ctx, ctx.currentTime + 0.01, 0.13);
+
+    const canTTS = ('speechSynthesis' in window) && mode !== 'pudu';
+    if (!canTTS) {
+      playPuduAnimalese(clean, timeline);
+      setTimeout(stopMouthAnim, totalDuration * 1000 + 150);
+      return;
+    }
+
     try {
       window.speechSynthesis.cancel();
-      const clean = text.replace(/[\u{1F300}-\u{1F9FF}]/gu, '').replace(/[#*_~`]/g, '').trim();
       const u = new SpeechSynthesisUtterance(clean);
-      u.pitch = 2.0;
-      u.rate = 1.02;
-      u.volume = 0.95;
       u.lang = 'es-CL';
+      u.pitch = 1.36;   // Rango dulce natural sin distorsión metálica en Safari/Chrome
+      u.rate = 1.06;
+      u.volume = 0.95;
 
-      const voices = window.speechSynthesis.getVoices();
-      const es = voices.find((v) => v.lang.startsWith('es-CL') || v.lang.startsWith('es') || v.lang.includes('Spanish'));
-      if (es) u.voice = es;
+      const voice = pickSweetSpanishVoice();
+      if (voice) u.voice = voice;
 
-      puduSpeakingActive = true;
+      // Sincronización híbrida: onboundary ajusta el reloj si el navegador lo soporta (Chrome desktop)
+      u.onboundary = (ev) => {
+        if (!puduLipSync.active || typeof ev.charIndex !== 'number') return;
+        const match = puduLipSync.timeline.find((s) => s.charIndex >= ev.charIndex);
+        if (match) {
+          const nowSec = performance.now() * 0.001;
+          puduLipSync.startTime = nowSec - match.t0;
+        }
+      };
+
+      u.onstart = () => {
+        puduLipSync.startTime = performance.now() * 0.001;
+      };
       u.onend = stopMouthAnim;
-      u.onerror = stopMouthAnim;
+      u.onerror = () => {
+        // Fallback inmediato a voz procedural si el TTS falla en móvil
+        playPuduAnimalese(clean, timeline);
+        setTimeout(stopMouthAnim, totalDuration * 1000);
+      };
+
       window.speechSynthesis.speak(u);
-    } catch (_) {}
+    } catch (_) {
+      playPuduAnimalese(clean, timeline);
+    }
   }
+
+  // Desbloqueo de AudioContext en iOS/Safari/Chrome tras primer gesto del usuario
+  ['pointerdown', 'touchstart', 'keydown'].forEach((evt) => {
+    window.addEventListener(evt, () => { getPuduAudioCtx(); }, { once: true, passive: true });
+  });
 
   /* ---------- Sincronización de proyección y cámara ---------- */
   function syncCameraProjection(W, H, ex, ey) {
@@ -2383,7 +2776,7 @@ const puduBrain=new PuduAI();
 
     animatePuduByState(t, dt);
     updateEyes(t);
-    updateMouth(t);
+    updateMouth(t, dt);
     updateEars(t);
     updateCheeks();
     updateBreathing(t);
